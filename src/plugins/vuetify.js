@@ -1,10 +1,10 @@
 // Styles
-import '@mdi/font/css/materialdesignicons.css'
-import 'vuetify/styles'
+import "@mdi/font/css/materialdesignicons.css";
+import "vuetify/styles";
 
 // Vuetify
-import { createVuetify } from 'vuetify'
-import colors from 'vuetify/lib/util/colors'
+import { createVuetify } from "vuetify";
+import colors from "vuetify/lib/util/colors";
 
 export default createVuetify({
   theme: {
@@ -16,7 +16,7 @@ export default createVuetify({
           secondary: colors.teal.lighten4,
           accent: colors.teal.darken1,
           grey: colors.grey.lighten5,
-        }
+        },
       },
       dark: {
         dark: true,
@@ -25,8 +25,8 @@ export default createVuetify({
           secondary: colors.grey.darken3,
           accent: colors.teal.accent2,
           grey: colors.grey.darken2,
-        }
+        },
       },
     },
   },
-})
+});
