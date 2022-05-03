@@ -1,7 +1,7 @@
 <script setup>
-import Turtle from '../utils/turtle';
+import Turtle from '../utils/Turtle';
 import * as THREE from 'three';
-import { onMounted, ref, render } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(70, 2, 1, 1000);
