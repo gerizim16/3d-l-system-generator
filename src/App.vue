@@ -17,7 +17,7 @@ const theme = computed(() => {
   return lightMode.value ? "light" : "dark";
 });
 
-const commands = ref("");
+const commands = ref("commands");
 </script>
 
 <template>
@@ -41,6 +41,7 @@ const commands = ref("");
     <v-navigation-drawer v-model="drawer" color="secondary" width="500">
       <v-container>
         <Form @generate="(x) => (commands = x)"></Form>
+        {{ commands }}
       </v-container>
     </v-navigation-drawer>
 

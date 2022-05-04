@@ -20,13 +20,13 @@ const positiveRule = [
 function submit() {
   const result = parseLsystem(iterations.value, axiom.value, productions.value);
   if (result != null) {
-    emit("generate");
+    emit("generate", result);
   }
 }
 </script>
 
 <template>
-  <v-form ref="form" @submit.prevent="submit">
+  <v-form ref="form">
     <v-text-field
       v-model="iterations"
       label="Iterations"

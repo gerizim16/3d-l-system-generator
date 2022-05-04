@@ -86,6 +86,7 @@ export default class Turtle {
   }
 
   startLine() {
+    if (this.drawing) return this;
     this.drawing = true;
     this.currentCurve.push(this.pos.clone());
     return this;
@@ -120,7 +121,10 @@ export default class Turtle {
   }
 
   push() {
-    if (this.drawing) this.endLine();
+    if (this.drawing) {
+      this.endLine();
+      this.startLine();
+    }
     this.stack.push({
       pos: this.pos.clone(),
       dir: this.dir.clone(),
@@ -132,9 +136,12 @@ export default class Turtle {
   }
 
   pop() {
-    if (this.drawing) this.endLine();
+    if (this.drawing) {
+      this.endLine();
+      this.startLine();
+    }
     const x = this.stack.pop();
-    if (!x) return;
+    if (!x) return this;
     Object.assign(this, x);
     return this;
   }
