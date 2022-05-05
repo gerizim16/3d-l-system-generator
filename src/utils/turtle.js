@@ -198,31 +198,31 @@ export default class Turtle {
 
   do(command) {
     switch (command.sym) {
-      case "x":
-        this.rotateX(-this.defAngle);
-        break;
-      case "X":
+      case "+x":
         this.rotateX();
         break;
-      case "y":
-        this.rotateY(-this.defAngle);
+      case "-x":
+        this.rotateX(-this.defAngle);
         break;
-      case "Y":
+      case "+y":
         this.rotateY();
         break;
-      case "z":
-        this.rotateZ(-this.defAngle);
+      case "-y":
+        this.rotateY(-this.defAngle);
         break;
-      case "Z":
+      case "+z":
         this.rotateZ();
         break;
-      case "fwd":
+      case "-z":
+        this.rotateZ(-this.defAngle);
+        break;
+      case "f":
         this.forward();
         break;
-      case "start":
+      case "s":
         this.startLine();
         break;
-      case "end":
+      case "e":
         this.endLine();
         break;
       case "[":
@@ -243,13 +243,13 @@ export default class Turtle {
       case "cone":
         this.cone();
         break;
-      case "rad":
+      case "r":
         this.setRadius();
         break;
-      case "tens":
+      case "t":
         this.setTension();
         break;
-      case "mat":
+      case "m":
         this.setMaterial();
         break;
 

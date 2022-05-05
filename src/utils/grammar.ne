@@ -19,11 +19,11 @@ expression -> command {% id %} | variable {% id %}
 variable -> variableSymbol parameters {%
     ([sym, params]) => ({sym, params})
 %}
-command -> "!" commandSymbol parameters {%
-    ([_, sym, params]) => ({sym: sym[0], params, command: true})
+command -> commandSymbol parameters {%
+    ([sym, params]) => ({sym: sym[0], params, command: true})
 %}
-variableSymbol -> alpha {% id %}
-commandSymbol -> "x"i | "y"i | "z"i | "sphere"i | "box"i | "cube"i | "cone"i | "[" | "]" | "start"i | "end"i | "fwd"i | "rad"i | "tens"i | "mat"i
+variableSymbol -> upper {% id %}
+commandSymbol -> "+x" | "-x" | "+y" | "-y" | "+z" | "-z" | "sphere" | "box" | "cube" | "cone" | "[" | "]" | "s" | "e" | "f" | "r" | "t" | "m"
 parameters ->
     "{" some_params "}" {% array => array[1] %}
     | null
@@ -36,7 +36,7 @@ param -> [a-zA-Z0-9 +\-*\/!^&|~><()]:+ {%
     array => array[0].join("")
 %}
 
-alpha -> [a-zA-Z]:+ {%
+upper -> [A-Z]:+ {%
     array => array[0].join("")
 %}
 

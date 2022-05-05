@@ -79,6 +79,7 @@ watch(
     const aabb = new THREE.Box3().setFromObject(turtle.group);
     const target = new THREE.Vector3();
     aabb.getCenter(target);
+    target.setX(0);
     controls.target.copy(target);
     controls.update();
   }

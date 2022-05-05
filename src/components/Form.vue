@@ -6,9 +6,9 @@ import { onMounted, ref } from "vue";
 const emit = defineEmits(["generate"]);
 
 const iterations = ref(4);
-const axiom = ref("!cube A");
+const axiom = ref("cube A");
 const productions = ref(
-  "A -> !start !fwd !end !X !Y !Z ![ ![ A !] !x A !] !x !y !z !start !fwd !end ![ !x !start !fwd !end A !sphere !] !X A\n!fwd -> !fwd !fwd"
+  "A -> s f e +x +y +z [ [ A ] -x A ] -x -y -z s f e [ -x s f e A sphere ] +x A\nf -> f f"
 );
 const error = ref(new Error());
 const showError = ref(false);
@@ -26,7 +26,6 @@ function submit() {
   } catch (parseError) {
     error.value = parseError;
     showError.value = true;
-    throw parseError;
   }
 }
 
