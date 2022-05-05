@@ -1,13 +1,18 @@
-main -> rule _ {% id %} | axiom _ {% id %}
+main -> axiom _ {% id %} | some_rule _ {% id %}
+some_rule ->
+    rule _ "\n" _ some_rule {%
+        ([head, _1, _2, _3, tail]) => [head].concat(tail)
+    %}
+    | rule
 rule -> nonterminal _ "->" _ some_exp {%
-    ([lhs, _1, _2, _3, rhs]) => ({lhs, rhs, rule: true})
+    ([lhs, _1, _2, _3, rhs]) => ({lhs, rhs, production: true})
 %}
 axiom -> some_exp {%
     ([val]) => ({val, axiom: true})
 %}
 some_exp ->
     (terminal | nonterminal) __ some_exp {%
-        ([head, _, tail]) => [head].concat(tail)
+        ([head, _, tail]) => [head[0]].concat(tail)
     %}
     | (terminal | nonterminal)
 nonterminal -> nonterminalSymbol parameters {%

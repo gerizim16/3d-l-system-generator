@@ -5,11 +5,15 @@ function id(x) { return x[0]; }
 var grammar = {
     Lexer: undefined,
     ParserRules: [
-    {"name": "main", "symbols": ["rule", "_"], "postprocess": id},
     {"name": "main", "symbols": ["axiom", "_"], "postprocess": id},
+    {"name": "main", "symbols": ["some_rule", "_"], "postprocess": id},
+    {"name": "some_rule", "symbols": ["rule", "_", {"literal":"\n"}, "_", "some_rule"], "postprocess": 
+        ([head, _1, _2, _3, tail]) => [head].concat(tail)
+            },
+    {"name": "some_rule", "symbols": ["rule"]},
     {"name": "rule$string$1", "symbols": [{"literal":"-"}, {"literal":">"}], "postprocess": function joiner(d) {return d.join('');}},
     {"name": "rule", "symbols": ["nonterminal", "_", "rule$string$1", "_", "some_exp"], "postprocess": 
-        ([lhs, _1, _2, _3, rhs]) => ({lhs, rhs, rule: true})
+        ([lhs, _1, _2, _3, rhs]) => ({lhs, rhs, production: true})
         },
     {"name": "axiom", "symbols": ["some_exp"], "postprocess": 
         ([val]) => ({val, axiom: true})
@@ -17,7 +21,7 @@ var grammar = {
     {"name": "some_exp$subexpression$1", "symbols": ["terminal"]},
     {"name": "some_exp$subexpression$1", "symbols": ["nonterminal"]},
     {"name": "some_exp", "symbols": ["some_exp$subexpression$1", "__", "some_exp"], "postprocess": 
-        ([head, _, tail]) => [head].concat(tail)
+        ([head, _, tail]) => [head[0]].concat(tail)
             },
     {"name": "some_exp$subexpression$2", "symbols": ["terminal"]},
     {"name": "some_exp$subexpression$2", "symbols": ["nonterminal"]},

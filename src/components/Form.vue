@@ -1,26 +1,29 @@
 <script setup>
-import parseLsystem from "@/utils/lsystem";
+import { iterate } from "@/utils/lsystem";
 
 import { ref } from "vue";
 
-const emit = defineEmits({
-  generate(result) {
-    return result == null;
-  },
-});
+const emit = defineEmits(["generate"]);
 
 const iterations = ref(4);
 const axiom = ref("");
 const productions = ref("");
+const error = ref(new Error());
+const showError = ref(false);
 
 const positiveRule = [
   (v) => (Number.isInteger(v) && v > 0) || "Must be a positive number.",
 ];
 
 function submit() {
-  const result = parseLsystem(iterations.value, axiom.value, productions.value);
-  if (result != null) {
+  error.value = false;
+  showError.value = false;
+  try {
+    const result = iterate(axiom.value, productions.value, iterations.value);
     emit("generate", result);
+  } catch (parseError) {
+    error.value = parseError;
+    showError.value = true;
   }
 }
 </script>
@@ -86,6 +89,20 @@ function submit() {
       required
     />
 
-    <v-btn @click="submit" type="submit" block> Generate </v-btn>
+    <v-btn @click="submit" color="primary" type="submit" block> Generate </v-btn>
+    <v-slide-y-transition>
+      <v-alert
+        v-model="showError"
+        type="error"
+        icon="mdi-alert-decagram"
+        class="my-4"
+        closable
+      >
+        <v-alert-title>{{ error }}</v-alert-title>
+        <div class="text-block mono">
+          {{ error.cause || null }}
+        </div>
+      </v-alert>
+    </v-slide-y-transition>
   </v-form>
 </template>

@@ -1,27 +1,46 @@
 import nearley from "nearley";
 import "./grammar";
 
-export default function parseLsystem(iterations, axiom, productions) {
-  let parsedAxiom = {};
-  let parsedRules = [];
+function buildSyntaxError(error) {
+  error.name = "SyntaxError";
+  return error;
+}
 
+export function parse(expression) {
   try {
     const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
-    parser.feed(axiom);
-    parsedAxiom = parser.results[0];
-  } catch (parseError) {
-    console.log(parseError);
-  }
-
-  for (const rule of productions.split("\n")) {
-    try {
-      const parser = new nearley.Parser(nearley.Grammar.fromCompiled(grammar));
-      parser.feed(rule);
-      parsedRules.push(parser.results[0]);
-    } catch (parseError) {
-      console.log(parseError);
+    parser.feed(expression);
+    const results = parser.results;
+    if (results.length === 0) {
+      throw new SyntaxError("Unexpected end of input.");
     }
+    return results[0];
+  } catch (parseError) {
+    throw buildSyntaxError(parseError);
+  }
+}
+
+export function iterate(axiom, production, iterations) {
+  let parsedAxiom;
+  let parsedProd;
+
+  try {
+    parsedAxiom = parse(axiom);
+    if (parsedAxiom.production) {
+      throw new Error("Enter an axiom not a production.");
+    }
+  } catch (error) {
+    throw new Error("Error parsing axiom.", { cause: error });
   }
 
-  return { iterations, parsedAxiom, parsedRules };
+  try {
+    parsedProd = parse(production);
+    if (parsedProd.axiom) {
+      throw new Error("Enter a production not an axiom.");
+    }
+  } catch (error) {
+    throw new Error("Error parsing production.", { cause: error });
+  }
+
+  return { parsedAxiom, parsedProd, iterations };
 }
