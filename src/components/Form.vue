@@ -1,18 +1,20 @@
 <script setup>
 import { iterate } from "@/utils/lsystem";
 
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 const emit = defineEmits(["generate"]);
 
 const iterations = ref(4);
-const axiom = ref("");
-const productions = ref("");
+const axiom = ref("!cube A");
+const productions = ref(
+  "A -> !start !fwd !end !X !Y !Z ![ ![ A !] !x A !] !x !y !z !start !fwd !end ![ !x !start !fwd !end A !sphere !] !X A\n!fwd -> !fwd !fwd"
+);
 const error = ref(new Error());
 const showError = ref(false);
 
-const positiveRule = [
-  (v) => (Number.isInteger(v) && v > 0) || "Must be a positive number.",
+const nonNegRule = [
+  (v) => (Number.isInteger(v) && v >= 0) || "Must be a non-negative number.",
 ];
 
 function submit() {
@@ -24,8 +26,13 @@ function submit() {
   } catch (parseError) {
     error.value = parseError;
     showError.value = true;
+    throw parseError;
   }
 }
+
+onMounted(() => {
+  submit();
+});
 </script>
 
 <template>
@@ -37,15 +44,15 @@ function submit() {
       variant="outlined"
       color="accent"
       bg-color="grey"
-      :rules="positiveRule"
+      :rules="nonNegRule"
       required
     />
     <v-slider
       v-model="iterations"
       label="Iterations"
       :step="1"
-      :min="1"
-      :max="10"
+      :min="0"
+      :max="6"
       color="accent"
       thumb-label
       ticks
@@ -57,7 +64,7 @@ function submit() {
           icon="mdi-minus"
           :color="color"
           @click="iterations--"
-          :disabled="iterations <= 1"
+          :disabled="iterations <= 0"
         ></v-btn>
       </template>
 
@@ -89,7 +96,9 @@ function submit() {
       required
     />
 
-    <v-btn @click="submit" color="primary" type="submit" block> Generate </v-btn>
+    <v-btn @click="submit" color="primary" type="submit" block>
+      Generate
+    </v-btn>
     <v-slide-y-transition>
       <v-alert
         v-model="showError"

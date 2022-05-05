@@ -41,7 +41,7 @@ const commands = ref("commands");
     <v-navigation-drawer v-model="drawer" color="secondary" width="500">
       <v-container>
         <Form @generate="(x) => (commands = x)"></Form>
-        {{ commands }}
+        <!-- {{ commands }} -->
       </v-container>
     </v-navigation-drawer>
 

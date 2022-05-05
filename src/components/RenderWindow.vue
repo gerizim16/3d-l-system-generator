@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 
 import Turtle from "@/utils/Turtle";
 
@@ -15,7 +15,9 @@ const props = defineProps({
   height: {
     default: "100%",
   },
-  commands: {},
+  commands: {
+    default: [],
+  },
 });
 
 const container = ref();
@@ -32,15 +34,15 @@ const canvas = renderer.domElement;
 RectAreaLightUniformsLib.init();
 
 const rectLight1 = new THREE.RectAreaLight(0xff0000, 10, 4, 10);
-rectLight1.position.set(-5, 5, 5);
+rectLight1.position.set(-5, 5, 10);
 scene.add(rectLight1);
 
 const rectLight2 = new THREE.RectAreaLight(0x00ff00, 10, 4, 10);
-rectLight2.position.set(0, 5, 5);
+rectLight2.position.set(0, 5, 10);
 scene.add(rectLight2);
 
 const rectLight3 = new THREE.RectAreaLight(0x0000ff, 10, 4, 10);
-rectLight3.position.set(5, 5, 5);
+rectLight3.position.set(5, 5, 10);
 scene.add(rectLight3);
 
 scene.add(new RectAreaLightHelper(rectLight1));
@@ -58,50 +60,29 @@ const mshStdFloor = new THREE.Mesh(geoFloor, matStdFloor);
 scene.add(mshStdFloor);
 
 // turtle
-// TODO command turtle based on commands
 const turtle = new Turtle(scene);
-turtle
-  .push()
-  .setMaterial({
-    color: 0xffffff,
-    roughness: 1,
-    metalness: 0.1,
-    wireframe: true,
-  })
-  .setRadius(0.5)
-  .startLine()
-  .forward(3)
-  .rotateX(-Math.PI / 2)
-  .forward(3)
-  .rotateY(Math.PI / 2)
-  .forward(3)
-  .rotateZ(Math.PI / 2)
-  .forward(3)
-  .endLine()
-  .pop()
-  .setRadius(0.25)
-  .startLine()
-  .forward(3)
-  .rotateX(Math.PI / 2)
-  .forward(3)
-  .rotateY(Math.PI / 2)
-  .forward(3)
-  .rotateZ(Math.PI / 2)
-  .forward(3)
-  .endLine()
-  .sphere(1)
-  .rotateZ(Math.PI / 4)
-  .forward(2)
-  .box(2, 2, 0.5)
-  .startLine()
-  .forward(2)
-  .endLine()
-  .cone(1, 2);
 
 // camera orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.copy(new THREE.Vector3(0, 5, 0));
-controls.update();
+// controls.target.copy(new THREE.Vector3(0, 5, 0));
+// controls.update();
+
+watch(
+  () => props.commands,
+  (commands) => {
+    turtle.reset();
+    for (const command of commands) {
+      turtle.do(command);
+    }
+
+    // bounding box
+    const aabb = new THREE.Box3().setFromObject(turtle.group);
+    const target = new THREE.Vector3();
+    aabb.getCenter(target);
+    controls.target.copy(target);
+    controls.update();
+  }
+);
 
 function animate(time) {
   time *= 0.001; // convert time to seconds
@@ -124,8 +105,8 @@ function resizeCanvasToDisplaySize() {
 const resizeObserver = new ResizeObserver(resizeCanvasToDisplaySize);
 
 onMounted(() => {
-  canvas.style.width = props.width;
-  canvas.style.height = props.height;
+  canvas.style.width = "100%";
+  canvas.style.height = "100%";
   resizeObserver.observe(renderer.domElement, { box: "content-box" });
   container.value.appendChild(renderer.domElement);
   requestAnimationFrame(animate);
@@ -138,7 +119,7 @@ onMounted(() => {
 
 <style scoped>
 #container {
-  height: 100%;
-  width: 100%;
+  height: v-bind(height);
+  width: v-bind(width);
 }
 </style>

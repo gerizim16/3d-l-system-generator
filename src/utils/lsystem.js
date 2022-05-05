@@ -21,8 +21,8 @@ export function parse(expression) {
 }
 
 export function iterate(axiom, production, iterations) {
-  let parsedAxiom;
-  let parsedProd;
+  let parsedAxiom = {};
+  let parsedProd = [];
 
   try {
     parsedAxiom = parse(axiom);
@@ -42,5 +42,28 @@ export function iterate(axiom, production, iterations) {
     throw new Error("Error parsing production.", { cause: error });
   }
 
-  return { parsedAxiom, parsedProd, iterations };
+  const replacements = parsedProd;
+
+  let repIdx = {};
+  for (const [index, p] of replacements.entries()) {
+    const sym = p.lhs.sym;
+    if (repIdx[sym] === Array) {
+      repIdx[sym].push(index);
+    } else {
+      repIdx[sym] = [index];
+    }
+  }
+
+  let result = parsedAxiom.val;
+
+  for (let i = 0; i < iterations; ++i) {
+    result = result.flatMap((curr) => {
+      const sym = curr.sym;
+      if (!repIdx[sym]) return curr;
+      const rule = replacements[repIdx[sym][0]];
+      return rule.rhs;
+    });
+  }
+
+  return result;
 }

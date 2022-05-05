@@ -1,28 +1,29 @@
-main -> axiom _ {% id %} | some_rule _ {% id %}
-some_rule ->
-    rule _ "\n" _ some_rule {%
+main -> axiom _ {% id %} | some_prod _ {% id %}
+some_prod ->
+    prod _ "\n" _ some_prod {%
         ([head, _1, _2, _3, tail]) => [head].concat(tail)
     %}
-    | rule
-rule -> nonterminal _ "->" _ some_exp {%
+    | prod
+prod -> expression _ "->" _ some_exp {%
     ([lhs, _1, _2, _3, rhs]) => ({lhs, rhs, production: true})
 %}
 axiom -> some_exp {%
     ([val]) => ({val, axiom: true})
 %}
 some_exp ->
-    (terminal | nonterminal) __ some_exp {%
-        ([head, _, tail]) => [head[0]].concat(tail)
+    expression __ some_exp {%
+        ([head, _, tail]) => [head].concat(tail)
     %}
-    | (terminal | nonterminal)
-nonterminal -> nonterminalSymbol parameters {%
+    | expression
+expression -> command {% id %} | variable {% id %}
+variable -> variableSymbol parameters {%
     ([sym, params]) => ({sym, params})
 %}
-terminal -> "!" terminalSymbol parameters {%
-    ([_, sym, params]) => ({sym: sym[0], params, term: true})
+command -> "!" commandSymbol parameters {%
+    ([_, sym, params]) => ({sym: sym[0], params, command: true})
 %}
-nonterminalSymbol -> alpha {% id %}
-terminalSymbol -> "x"i | "y"i | "z"i | "sphere"i | "box"i | "cube"i | "cone"i | "[" | "]" | "start"i | "end"i | "fwd"i | "rad"i | "tens"i | "mat"i
+variableSymbol -> alpha {% id %}
+commandSymbol -> "x"i | "y"i | "z"i | "sphere"i | "box"i | "cube"i | "cone"i | "[" | "]" | "start"i | "end"i | "fwd"i | "rad"i | "tens"i | "mat"i
 parameters ->
     "{" some_params "}" {% array => array[1] %}
     | null
