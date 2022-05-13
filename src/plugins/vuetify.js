@@ -21,10 +21,10 @@ export default createVuetify({
       dark: {
         dark: true,
         colors: {
-          primary: colors.grey.darken4,
-          secondary: colors.grey.darken3,
+          primary: colors.teal.darken1,
+          secondary: colors.grey.darken2,
           accent: colors.teal.accent2,
-          grey: colors.grey.darken2,
+          grey: colors.grey.darken3,
         },
       },
     },

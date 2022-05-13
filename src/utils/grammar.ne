@@ -23,7 +23,7 @@ command -> commandSymbol parameters {%
     ([sym, params]) => ({sym: sym[0], params, command: true})
 %}
 variableSymbol -> upper {% id %}
-commandSymbol -> "+x" | "-x" | "+y" | "-y" | "+z" | "-z" | "sphere" | "box" | "cube" | "cone" | "[" | "]" | "s" | "e" | "f" | "r" | "t" | "m"
+commandSymbol -> "+x" | "-x" | "+y" | "-y" | "+z" | "-z" | "sphere" | "box" | "cube" | "cone" | "[" | "]" | "s" | "e" | "f" | "l" | "r" | "t" | "m"
 parameters ->
     "{" some_params "}" {% array => array[1] %}
     | null
@@ -32,7 +32,7 @@ some_params ->
         ([head, _, tail]) => [head].concat(tail)
     %}
     | param
-param -> [a-zA-Z0-9 +\-*\/!^&|~><()]:+ {%
+param -> [a-zA-Z0-9 +\-*\/!^&|~><()\.]:+ {%
     array => array[0].join("")
 %}
 

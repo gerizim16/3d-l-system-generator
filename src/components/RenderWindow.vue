@@ -18,6 +18,9 @@ const props = defineProps({
   commands: {
     default: [],
   },
+  defaults: {
+    default: Object.assign({}, Turtle.defaults),
+  },
 });
 
 const container = ref();
@@ -25,7 +28,6 @@ const container = ref();
 // scene, camera, renderer
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(50, 2, 1, 1000);
-camera.position.set(0, 5, -15);
 
 const renderer = new THREE.WebGLRenderer();
 const canvas = renderer.domElement;
@@ -67,23 +69,22 @@ const controls = new OrbitControls(camera, renderer.domElement);
 // controls.target.copy(new THREE.Vector3(0, 5, 0));
 // controls.update();
 
-watch(
-  () => props.commands,
-  (commands) => {
-    turtle.reset();
-    for (const command of commands) {
-      turtle.do(command);
-    }
-
-    // bounding box
-    const aabb = new THREE.Box3().setFromObject(turtle.group);
-    const target = new THREE.Vector3();
-    aabb.getCenter(target);
-    target.setX(0);
-    controls.target.copy(target);
-    controls.update();
+watch([() => props.commands, () => props.defaults], ([commands, defaults]) => {
+  turtle.setDefaults(defaults);
+  turtle.reset();
+  for (const command of commands) {
+    turtle.do(command);
   }
-);
+
+  // bounding box
+  camera.position.set(0, 5, -15);
+  const aabb = new THREE.Box3().setFromObject(turtle.group);
+  const target = new THREE.Vector3();
+  aabb.getCenter(target);
+  target.setX(0);
+  controls.target.copy(target);
+  controls.update();
+});
 
 function animate(time) {
   time *= 0.001; // convert time to seconds

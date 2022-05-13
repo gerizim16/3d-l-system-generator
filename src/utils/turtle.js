@@ -1,5 +1,22 @@
 import * as THREE from "three";
+
+function assignExisting(target, source) {
+  Object.keys(source)
+    .filter((key) => key in target)
+    .forEach((key) => (target[key] = source[key]));
+}
+
+const defaults = {
+  length: 0.2,
+  angle: 0.4,
+  radius: 0.05,
+  size: 0.3,
+};
 export default class Turtle {
+  static get defaults() {
+    return defaults;
+  }
+
   constructor(scene) {
     this.scene = scene;
 
@@ -8,10 +25,7 @@ export default class Turtle {
     this.materials = [];
     this.geometries = [];
 
-    this.defLength = 0.25;
-    this.defAngle = 0.4363;
-    this.defRadius = 0.05;
-    this.defSize = 0.3;
+    this.defaults = Object.assign({}, Turtle.defaults);
 
     this.reset();
   }
@@ -20,7 +34,7 @@ export default class Turtle {
     this.pos = new THREE.Vector3();
     this.dir = new THREE.Vector3(0, 1, 0);
     this.tension = 0.5;
-    this.radius = this.defRadius;
+    this.radius = this.defaults.radius;
     this.stack = [];
     this.currentCurve = [];
 
@@ -40,16 +54,31 @@ export default class Turtle {
   }
 
   resetMaterial() {
-    this.setMaterial({
-      color: 0xffffff,
-      roughness: 0.1,
-      metalness: 0.7,
-    });
+    this.setMaterial();
     return this;
   }
 
-  setMaterial(parameters = {}) {
-    this.material = new THREE.MeshStandardMaterial(parameters);
+  setDefaults(new_defaults = {}) {
+    assignExisting(this.defaults, new_defaults);
+    return this;
+  }
+
+  setMaterial(
+    color = 0xffffff,
+    roughness = 0.1,
+    metalness = 0.9,
+    flatShading = false,
+    fog = true,
+    wireframe = false
+  ) {
+    this.material = new THREE.MeshStandardMaterial({
+      color,
+      roughness,
+      metalness,
+      flatShading,
+      fog,
+      wireframe,
+    });
     this.materials.push(this.material);
     return this;
   }
@@ -59,12 +88,12 @@ export default class Turtle {
     return this;
   }
 
-  setRadius(radius = this.defRadius) {
+  setRadius(radius = this.defaults.radius) {
     this.radius = radius;
     return this;
   }
 
-  forward(length = this.defLength) {
+  forward(length = this.defaults.length) {
     this.pos.addScaledVector(this.dir, length);
     if (this.drawing) this.currentCurve.push(this.pos.clone());
     return this;
@@ -75,17 +104,17 @@ export default class Turtle {
     return this;
   }
 
-  rotateX(angle = this.defAngle) {
+  rotateX(angle = this.defaults.angle) {
     this.rotate(new THREE.Vector3(1, 0, 0), angle);
     return this;
   }
 
-  rotateY(angle = this.defAngle) {
+  rotateY(angle = this.defaults.angle) {
     this.rotate(new THREE.Vector3(0, 1, 0), angle);
     return this;
   }
 
-  rotateZ(angle = this.defAngle) {
+  rotateZ(angle = this.defaults.angle) {
     this.rotate(new THREE.Vector3(0, 0, 1), angle);
     return this;
   }
@@ -129,6 +158,13 @@ export default class Turtle {
     return this;
   }
 
+  line(length = this.defaults.length) {
+    this.startLine();
+    this.forward(length);
+    this.endLine();
+    return this;
+  }
+
   push() {
     if (this.drawing) {
       this.endLine();
@@ -155,7 +191,7 @@ export default class Turtle {
     return this;
   }
 
-  sphere(radius = this.defSize / 2) {
+  sphere(radius = this.defaults.size / 2) {
     const geometry = new THREE.IcosahedronGeometry(radius, 5);
     this.geometries.push(geometry);
 
@@ -166,7 +202,11 @@ export default class Turtle {
     return this;
   }
 
-  box(width = this.defSize, height = this.defSize, depth = this.defSize) {
+  box(
+    width = this.defaults.size,
+    height = this.defaults.size,
+    depth = this.defaults.size
+  ) {
     const geometry = new THREE.BoxGeometry(width, height, depth);
     this.geometries.push(geometry);
 
@@ -178,12 +218,12 @@ export default class Turtle {
     return this;
   }
 
-  cube(side = this.defSize) {
+  cube(side = this.defaults.size) {
     this.box(side, side, side);
     return this;
   }
 
-  cone(radius = this.defSize, height = this.defSize) {
+  cone(radius = this.defaults.size / 2, height = this.defaults.size) {
     const geometry = new THREE.ConeGeometry(radius, height);
     this.geometries.push(geometry);
 
@@ -199,31 +239,34 @@ export default class Turtle {
   do(command) {
     switch (command.sym) {
       case "+x":
-        this.rotateX();
+        this.rotateX(command.params[0]);
         break;
       case "-x":
-        this.rotateX(-this.defAngle);
+        this.rotateX(command.params[0] ?? -this.defaults.angle);
         break;
       case "+y":
-        this.rotateY();
+        this.rotateY(command.params[0]);
         break;
       case "-y":
-        this.rotateY(-this.defAngle);
+        this.rotateY(command.params[0] ?? -this.defaults.angle);
         break;
       case "+z":
-        this.rotateZ();
+        this.rotateZ(command.params[0]);
         break;
       case "-z":
-        this.rotateZ(-this.defAngle);
+        this.rotateZ(command.params[0] ?? -this.defaults.angle);
         break;
       case "f":
-        this.forward();
+        this.forward(...command.params);
         break;
       case "s":
         this.startLine();
         break;
       case "e":
         this.endLine();
+        break;
+      case "l":
+        this.line(...command.params);
         break;
       case "[":
         this.push();
@@ -232,25 +275,25 @@ export default class Turtle {
         this.pop();
         break;
       case "sphere":
-        this.sphere();
+        this.sphere(...command.params);
         break;
       case "box":
-        this.box();
+        this.box(...command.params);
         break;
       case "cube":
-        this.cube();
+        this.cube(...command.params);
         break;
       case "cone":
-        this.cone();
+        this.cone(...command.params);
         break;
       case "r":
-        this.setRadius();
+        this.setRadius(...command.params);
         break;
       case "t":
-        this.setTension();
+        this.setTension(...command.params);
         break;
       case "m":
-        this.setMaterial();
+        this.setMaterial(...command.params);
         break;
 
       default:

@@ -1,24 +1,22 @@
 <script setup>
 import { iterate } from "@/utils/lsystem";
-
 import { onMounted, ref } from "vue";
 
 const emit = defineEmits(["generate"]);
 
 const iterations = ref(4);
-const axiom = ref("cube A");
+const axiom = ref("cone{2,2} A");
 const productions = ref(
-  "A -> s f e +x +y +z [ [ A ] -x A ] -x -y -z s f e [ -x s f e A sphere ] +x A\nf -> f f"
+  "A -> r{0.02} s f{0.2} e +x +y +z [ [ A ] -x A ] -x -y -z s f{0.2} e [ -x s f{0.2} e A sphere ] +x A\nf{a} -> f{a*2.5}\nf{a} -> f{a*2}\nsphere -> sphere\nsphere -> sphere{0.3}\nr{x} -> r{x*2}"
 );
 const error = ref(new Error());
 const showError = ref(false);
 
 const nonNegRule = [
-  (v) => (Number.isInteger(v) && v >= 0) || "Must be a non-negative number.",
+  (v) => (Number.isInteger(v) && v >= 0) || "Must be a non-negative integer.",
 ];
 
 function submit() {
-  error.value = false;
   showError.value = false;
   try {
     const result = iterate(axiom.value, productions.value, iterations.value);
@@ -26,6 +24,7 @@ function submit() {
   } catch (parseError) {
     error.value = parseError;
     showError.value = true;
+    throw parseError;
   }
 }
 
@@ -95,9 +94,7 @@ onMounted(() => {
       required
     />
 
-    <v-btn @click="submit" color="primary" type="submit" block>
-      Generate
-    </v-btn>
+    <v-btn @click="submit" color="accent" type="submit" block> Generate </v-btn>
     <v-slide-y-transition>
       <v-alert
         v-model="showError"
@@ -108,7 +105,7 @@ onMounted(() => {
       >
         <v-alert-title>{{ error }}</v-alert-title>
         <div class="text-block mono">
-          {{ error.cause || null }}
+          {{ error?.cause }}
         </div>
       </v-alert>
     </v-slide-y-transition>

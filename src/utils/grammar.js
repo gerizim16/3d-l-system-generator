@@ -56,6 +56,7 @@ var grammar = {
     {"name": "commandSymbol", "symbols": [{"literal":"s"}]},
     {"name": "commandSymbol", "symbols": [{"literal":"e"}]},
     {"name": "commandSymbol", "symbols": [{"literal":"f"}]},
+    {"name": "commandSymbol", "symbols": [{"literal":"l"}]},
     {"name": "commandSymbol", "symbols": [{"literal":"r"}]},
     {"name": "commandSymbol", "symbols": [{"literal":"t"}]},
     {"name": "commandSymbol", "symbols": [{"literal":"m"}]},
@@ -65,8 +66,8 @@ var grammar = {
         ([head, _, tail]) => [head].concat(tail)
             },
     {"name": "some_params", "symbols": ["param"]},
-    {"name": "param$ebnf$1", "symbols": [/[a-zA-Z0-9 +\-*\/!^&|~><()]/]},
-    {"name": "param$ebnf$1", "symbols": ["param$ebnf$1", /[a-zA-Z0-9 +\-*\/!^&|~><()]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
+    {"name": "param$ebnf$1", "symbols": [/[a-zA-Z0-9 +\-*\/!^&|~><()\.]/]},
+    {"name": "param$ebnf$1", "symbols": ["param$ebnf$1", /[a-zA-Z0-9 +\-*\/!^&|~><()\.]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "param", "symbols": ["param$ebnf$1"], "postprocess": 
         array => array[0].join("")
         },

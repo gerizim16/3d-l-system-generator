@@ -1,4 +1,12 @@
 import nearley from "nearley";
+import { create, all } from "mathjs/number";
+
+const math = create(all, {});
+
+function randomChoice(arr) {
+  return arr[Math.floor(arr.length * Math.random())];
+}
+
 // Generated automatically by nearley, version 2.20.1
 // http://github.com/Hardmath123/nearley
 
@@ -26,11 +34,7 @@ const grammar = {
     {
       name: "prod",
       symbols: ["expression", "_", "prod$string$1", "_", "some_exp"],
-      postprocess: ([lhs, _1, _2, _3, rhs]) => ({
-        lhs,
-        rhs,
-        production: true,
-      }),
+      postprocess: ([lhs, _1, _2, _3, rhs]) => ({ lhs, rhs, production: true }),
     },
     {
       name: "axiom",
@@ -53,11 +57,7 @@ const grammar = {
     {
       name: "command",
       symbols: ["commandSymbol", "parameters"],
-      postprocess: ([sym, params]) => ({
-        sym: sym[0],
-        params,
-        command: true,
-      }),
+      postprocess: ([sym, params]) => ({ sym: sym[0], params, command: true }),
     },
     { name: "variableSymbol", symbols: ["upper"], postprocess: id },
     {
@@ -162,6 +162,7 @@ const grammar = {
     { name: "commandSymbol", symbols: [{ literal: "s" }] },
     { name: "commandSymbol", symbols: [{ literal: "e" }] },
     { name: "commandSymbol", symbols: [{ literal: "f" }] },
+    { name: "commandSymbol", symbols: [{ literal: "l" }] },
     { name: "commandSymbol", symbols: [{ literal: "r" }] },
     { name: "commandSymbol", symbols: [{ literal: "t" }] },
     { name: "commandSymbol", symbols: [{ literal: "m" }] },
@@ -177,10 +178,10 @@ const grammar = {
       postprocess: ([head, _, tail]) => [head].concat(tail),
     },
     { name: "some_params", symbols: ["param"] },
-    { name: "param$ebnf$1", symbols: [/[a-zA-Z0-9 +\-*\/!^&|~><()]/] },
+    { name: "param$ebnf$1", symbols: [/[a-zA-Z0-9 +\-*\/!^&|~><()\.]/] },
     {
       name: "param$ebnf$1",
-      symbols: ["param$ebnf$1", /[a-zA-Z0-9 +\-*\/!^&|~><()]/],
+      symbols: ["param$ebnf$1", /[a-zA-Z0-9 +\-*\/!^&|~><()\.]/],
       postprocess: function arrpush(d) {
         return d[0].concat([d[1]]);
       },
@@ -263,7 +264,7 @@ export function iterate(axiom, production, iterations) {
 
   try {
     parsedAxiom = parse(axiom);
-    if (parsedAxiom.production) {
+    if (!parsedAxiom.axiom) {
       throw new Error("Enter an axiom not a production.");
     }
   } catch (error) {
@@ -284,7 +285,7 @@ export function iterate(axiom, production, iterations) {
   let repIdx = {};
   for (const [index, p] of replacements.entries()) {
     const sym = p.lhs.sym;
-    if (repIdx[sym] === Array) {
+    if (Array.isArray(repIdx[sym])) {
       repIdx[sym].push(index);
     } else {
       repIdx[sym] = [index];
@@ -292,13 +293,27 @@ export function iterate(axiom, production, iterations) {
   }
 
   let result = parsedAxiom.val;
+  for (const ax of result) {
+    ax.params = math.evaluate(ax.params);
+  }
 
   for (let i = 0; i < iterations; ++i) {
-    result = result.flatMap((curr) => {
-      const sym = curr.sym;
-      if (!repIdx[sym]) return curr;
-      const rule = replacements[repIdx[sym][0]];
-      return rule.rhs;
+    result = result.flatMap((ax) => {
+      const sym = ax.sym;
+      if (!repIdx[sym]) return ax;
+      const rule = replacements[randomChoice(repIdx[sym])];
+
+      const scope = {};
+      for (let idx = 0; idx < rule.lhs.params.length; ++idx) {
+        scope[rule.lhs.params[idx]] = ax.params[idx];
+      }
+
+      const ret = rule.rhs.map((item) => Object.assign({}, item));
+      for (const item of ret) {
+        item.params = math.evaluate(item.params, scope);
+      }
+
+      return ret;
     });
   }
 
