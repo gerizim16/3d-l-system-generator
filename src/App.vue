@@ -52,7 +52,12 @@ const nonNegRule = [
       </template>
     </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer" color="secondary" width="500">
+    <v-navigation-drawer
+      v-model="drawer"
+      color="secondary"
+      width="500"
+      touchless
+    >
       <v-container>
         <v-expansion-panels v-model="panels" multiple>
           <v-expansion-panel>
