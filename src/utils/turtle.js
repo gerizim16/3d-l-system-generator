@@ -6,13 +6,23 @@ function assignExisting(target, source) {
     .forEach((key) => (target[key] = source[key]));
 }
 
-const defaults = {
+const defaults = Object.freeze({
   length: 0.2,
   angle: 0.4,
   radius: 0.05,
   size: 0.3,
-};
+});
 export default class Turtle {
+  scene;
+  lights;
+  material;
+  materials;
+  geometries;
+  pos;
+  dir;
+  tension;
+  radius;
+
   static get defaults() {
     return defaults;
   }
@@ -38,8 +48,8 @@ export default class Turtle {
     this.stack = [];
     this.currentCurve = [];
 
-    this.lights.forEach((element) => element.dispose());
     this.scene.remove(this.group);
+    this.lights.forEach((element) => element.dispose());
     this.materials.forEach((element) => element.dispose());
     this.geometries.forEach((element) => element.dispose());
 
@@ -66,7 +76,7 @@ export default class Turtle {
   setMaterial(
     color = 0xffffff,
     roughness = 0.1,
-    metalness = 0.9,
+    metalness = 0.1,
     flatShading = false,
     fog = true,
     wireframe = false
@@ -152,16 +162,32 @@ export default class Turtle {
     this.geometries.push(geometry);
 
     const mesh = new THREE.Mesh(geometry, this.material);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
     this.group.add(mesh);
 
     this.currentCurve.length = 0;
     return this;
   }
 
-  line(length = this.defaults.length) {
-    this.startLine();
+  line(
+    length = this.defaults.length,
+    startR = this.radius,
+    endR = this.radius
+  ) {
+    const geometry = new THREE.CylinderGeometry(endR, startR, length);
+    this.geometries.push(geometry);
+
+    const mesh = new THREE.Mesh(geometry, this.material);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.lookAt(this.dir);
+    mesh.geometry.rotateX(Math.PI / 2);
+    mesh.position.copy(this.pos);
+    mesh.geometry.translate(0, 0, length / 2);
+    this.group.add(mesh);
+
     this.forward(length);
-    this.endLine();
     return this;
   }
 
@@ -197,6 +223,8 @@ export default class Turtle {
 
     const mesh = new THREE.Mesh(geometry, this.material);
     mesh.position.copy(this.pos);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
     this.group.add(mesh);
 
     return this;
@@ -211,6 +239,8 @@ export default class Turtle {
     this.geometries.push(geometry);
 
     const mesh = new THREE.Mesh(geometry, this.material);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
     mesh.lookAt(this.dir);
     mesh.position.copy(this.pos);
     this.group.add(mesh);
@@ -228,6 +258,8 @@ export default class Turtle {
     this.geometries.push(geometry);
 
     const mesh = new THREE.Mesh(geometry, this.material);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
     mesh.geometry.rotateX(Math.PI / 2);
     mesh.lookAt(this.dir);
     mesh.position.copy(this.pos);

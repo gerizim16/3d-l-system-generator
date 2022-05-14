@@ -69,7 +69,7 @@ var grammar = {
     {"name": "param$ebnf$1", "symbols": [/[a-zA-Z0-9 +\-*\/!^&|~><()\.]/]},
     {"name": "param$ebnf$1", "symbols": ["param$ebnf$1", /[a-zA-Z0-9 +\-*\/!^&|~><()\.]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},
     {"name": "param", "symbols": ["param$ebnf$1"], "postprocess": 
-        array => array[0].join("")
+        array => array[0].join("").trim()
         },
     {"name": "upper$ebnf$1", "symbols": [/[A-Z]/]},
     {"name": "upper$ebnf$1", "symbols": ["upper$ebnf$1", /[A-Z]/], "postprocess": function arrpush(d) {return d[0].concat([d[1]]);}},

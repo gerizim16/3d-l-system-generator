@@ -33,7 +33,7 @@ some_params ->
     %}
     | param
 param -> [a-zA-Z0-9 +\-*\/!^&|~><()\.]:+ {%
-    array => array[0].join("")
+    array => array[0].join("").trim()
 %}
 
 upper -> [A-Z]:+ {%

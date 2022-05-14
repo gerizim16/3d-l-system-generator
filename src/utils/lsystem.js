@@ -189,7 +189,7 @@ const grammar = {
     {
       name: "param",
       symbols: ["param$ebnf$1"],
-      postprocess: (array) => array[0].join(""),
+      postprocess: (array) => array[0].join("").trim(),
     },
     { name: "upper$ebnf$1", symbols: [/[A-Z]/] },
     {

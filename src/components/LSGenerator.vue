@@ -5,14 +5,14 @@ import { onMounted, ref } from "vue";
 const emit = defineEmits(["generate"]);
 
 const iterations = ref(4);
-const axiom = ref("cone{2,2} A");
+const axiom = ref("m{0x594d30, 0.9, 0} A{0.2}");
 const productions = ref(
-  "A -> r{0.02} s f{0.2} e +x +y +z [ [ A ] -x A ] -x -y -z s f{0.2} e [ -x s f{0.2} e A sphere ] +x A\nf{a} -> f{a*2.5}\nf{a} -> f{a*2}\nsphere -> sphere\nsphere -> sphere{0.3}\nr{x} -> r{x*2}"
+  "A{r} -> l{0.2, r, r} +x +y +z [ [ A{r/2} ] -x A{r/2} ] -x -y -z l{0.2, r, r} [ -x l{0.2, r, r/2} A{r/2} m{0xf695c3, 0.7, 0} sphere ] +x A{r/2}\nl{a, b, c} -> l{a*2.5, b, c}\nl{a, b, c} -> l{a*2, b, c}\nsphere -> sphere{random()/7+0.1}"
 );
 const error = ref(new Error());
 const showError = ref(false);
 
-const nonNegRule = [
+const nonNegIntRule = [
   (v) => (Number.isInteger(v) && v >= 0) || "Must be a non-negative integer.",
 ];
 
@@ -42,7 +42,7 @@ onMounted(() => {
       variant="outlined"
       color="accent"
       bg-color="grey"
-      :rules="nonNegRule"
+      :rules="nonNegIntRule"
       required
     />
     <v-slider
@@ -53,7 +53,6 @@ onMounted(() => {
       :max="6"
       color="accent"
       thumb-label
-      ticks
     >
       <template v-slot:prepend>
         <v-btn

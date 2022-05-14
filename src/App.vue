@@ -6,6 +6,7 @@ import RenderWindow from "./components/RenderWindow.vue";
 import LSGenerator from "./components/LSGenerator.vue";
 
 import Turtle from "@/utils/Turtle";
+import { ENVIRONMENTS } from "@/utils/Environment";
 
 import "@/styles/global.scss";
 
@@ -24,6 +25,12 @@ const theme = computed(() => {
 const commands = ref([]);
 const defaultsForm = ref(Object.assign({}, Turtle.defaults));
 const defaultsCurrent = ref(Object.assign({}, Turtle.defaults));
+const renderer = ref(null);
+const environment = ref({
+  autoRotate: true,
+  modelAngle: 0,
+  environment: ENVIRONMENTS[0],
+});
 
 function updateTurtleDefaults() {
   defaultsCurrent.value = Object.assign({}, defaultsForm.value);
@@ -92,8 +99,35 @@ const nonNegRule = [
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
-            <v-expansion-panel-title>Theme</v-expansion-panel-title>
-            <v-expansion-panel-text>3D themes</v-expansion-panel-text>
+            <v-expansion-panel-title
+              >Environment Settings</v-expansion-panel-title
+            >
+            <v-expansion-panel-text>
+              <v-form>
+                <v-switch
+                  v-model="environment.autoRotate"
+                  label="Autorotate"
+                  inset
+                ></v-switch>
+                <v-label>Angle</v-label>
+                <v-slider
+                  v-model="environment.modelAngle"
+                  label="Angle"
+                  :step="0.01"
+                  :min="0"
+                  :max="2 * Math.PI"
+                  color="accent"
+                  thumb-label
+                  ticks
+                ></v-slider>
+                <v-select
+                  label="Environment"
+                  :items="ENVIRONMENTS.map((item) => item.name)"
+                  v-model="environment.environment"
+                  outlined
+                ></v-select>
+              </v-form>
+            </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
             <v-expansion-panel-title>Help</v-expansion-panel-title>
@@ -104,7 +138,14 @@ const nonNegRule = [
     </v-navigation-drawer>
 
     <v-main>
-      <RenderWindow :commands="commands" :defaults="defaultsCurrent" />
+      <RenderWindow
+        ref="renderer"
+        :commands="commands"
+        :defaults="defaultsCurrent"
+        :autoRotate="environment.autoRotate"
+        :modelAngle="environment.modelAngle"
+        :environment="environment.environment"
+      />
     </v-main>
   </v-app>
 </template>
