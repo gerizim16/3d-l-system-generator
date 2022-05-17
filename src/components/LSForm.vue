@@ -1,14 +1,34 @@
 <script setup>
 import { iterate } from "@/utils/lsystem";
-import { onMounted, ref } from "vue";
+import { onMounted, reactive, ref, watch } from "vue";
 
-const emit = defineEmits(["generate"]);
+const props = defineProps({
+  iterations: {
+    type: Number,
+    default: 4,
+  },
+  axiom: {
+    type: String,
+    default: "m{0x594d30, 0.9, 0} A{0.2}",
+  },
+  productions: {
+    type: String,
+    default:
+      "A{r} -> l{0.2, r, r} +x +y +z [ [ A{r/2} ] -x A{r/2} ] -x -y -z l{0.2, r, r} [ -x l{0.2, r, r/2} A{r/2} m{0xf695c3, 0.7, 0} sphere ] +x A{r/2}\nl{a, b, c} -> l{a*2.5, b, c}\nl{a, b, c} -> l{a*2, b, c}\nsphere -> sphere{random()/7+0.1}",
+  },
+});
 
-const iterations = ref(4);
-const axiom = ref("m{0x594d30, 0.9, 0} A{0.2}");
-const productions = ref(
-  "A{r} -> l{0.2, r, r} +x +y +z [ [ A{r/2} ] -x A{r/2} ] -x -y -z l{0.2, r, r} [ -x l{0.2, r, r/2} A{r/2} m{0xf695c3, 0.7, 0} sphere ] +x A{r/2}\nl{a, b, c} -> l{a*2.5, b, c}\nl{a, b, c} -> l{a*2, b, c}\nsphere -> sphere{random()/7+0.1}"
+const data = reactive(Object.assign({}, props));
+
+watch(props, (new_props) => {
+  Object.assign(data, new_props);
+});
+
+const emit = defineEmits(
+  ["iterations", "axiom", "productions"].map((name) => `update:${name}`) +
+    ["generate"]
 );
+
 const error = ref(new Error());
 const showError = ref(false);
 
@@ -19,8 +39,11 @@ const nonNegIntRule = [
 function submit() {
   showError.value = false;
   try {
-    const result = iterate(axiom.value, productions.value, iterations.value);
+    const result = iterate(data.axiom, data.productions, data.iterations);
     emit("generate", result);
+    for (const [key, value] of Object.entries(data)) {
+      emit(`update:${key}`, value);
+    }
   } catch (parseError) {
     error.value = parseError;
     showError.value = true;
@@ -36,7 +59,7 @@ onMounted(() => {
 <template>
   <v-form ref="form">
     <v-text-field
-      v-model="iterations"
+      v-model="data.iterations"
       label="Iterations"
       type="number"
       variant="outlined"
@@ -46,7 +69,7 @@ onMounted(() => {
       required
     />
     <v-slider
-      v-model="iterations"
+      v-model="data.iterations"
       label="Iterations"
       :step="1"
       :min="0"
@@ -77,7 +100,7 @@ onMounted(() => {
     </v-slider>
 
     <v-text-field
-      v-model="axiom"
+      v-model="data.axiom"
       label="Axiom"
       variant="outlined"
       color="accent"
@@ -85,7 +108,7 @@ onMounted(() => {
       required
     />
     <v-textarea
-      v-model="productions"
+      v-model="data.productions"
       variant="outlined"
       label="Productions"
       color="accent"

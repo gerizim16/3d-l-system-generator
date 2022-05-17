@@ -7,6 +7,8 @@ import { EnvironmentSwitcher, ENVIRONMENTS } from "@/utils/Environment";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
+import { EffectComposer, RenderPass } from "postprocessing";
+
 const props = defineProps({
   width: {
     default: "100%",
@@ -24,7 +26,7 @@ const props = defineProps({
     default: true,
   },
   environment: {
-    default: ENVIRONMENTS[0],
+    default: ENVIRONMENTS[0].name,
   },
   defaults: {
     default: Object.assign({}, Turtle.defaults),
@@ -42,15 +44,18 @@ renderer.shadowMap.enabled = true;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 const canvas = renderer.domElement;
 
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+
 // turtle
 const turtle = new Turtle(scene);
 
 // camera orbit controls
 const controls = new OrbitControls(camera, renderer.domElement);
 
-const env = new EnvironmentSwitcher(scene);
+const env = new EnvironmentSwitcher(scene, composer, camera);
 
-watch([() => props.commands, () => props.defaults], ([commands, defaults]) => {
+watch([() => props.commands, props.defaults], ([commands, defaults]) => {
   turtle.setDefaults(defaults);
   turtle.reset();
   for (const command of commands) {
@@ -86,15 +91,15 @@ function animate(time) {
 
   if (props.autoRotate) turtle.group.rotation.y += 0.005;
 
-  renderer.render(scene, camera);
   requestAnimationFrame(animate);
+  composer.render();
 }
 
 function resizeCanvasToDisplaySize() {
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
 
-  renderer.setSize(width, height, false);
+  composer.setSize(width, height, false);
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
 }

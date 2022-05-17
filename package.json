@@ -12,8 +12,9 @@
     "@mdi/font": "5.9.55",
     "mathjs": "^10.5.3",
     "nearley": "^2.20.1",
+    "postprocessing": "^6.26.4",
     "roboto-fontface": "*",
-    "three": "^0.140.0",
+    "three": "^0.140.2",
     "vue": "^3.2.33",
     "vuetify": "^3.0.0-beta.0",
     "webfontloader": "^1.0.0"

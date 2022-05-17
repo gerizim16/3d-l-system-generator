@@ -23,9 +23,7 @@ export default class Turtle {
   tension;
   radius;
 
-  static get defaults() {
-    return defaults;
-  }
+  static defaults = defaults;
 
   constructor(scene) {
     this.scene = scene;

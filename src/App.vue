@@ -1,14 +1,16 @@
 <script setup>
+import "@/styles/global.scss";
+
 import { ref } from "vue";
 import { computed } from "@vue/reactivity";
 
 import RenderWindow from "./components/RenderWindow.vue";
-import LSGenerator from "./components/LSGenerator.vue";
+import LSForm from "./components/LSForm.vue";
+import DefaultsForm from "./components/DefaultsForm.vue";
+import EnvironmentForm from "./components/EnvironmentForm.vue";
 
 import Turtle from "@/utils/Turtle";
 import { ENVIRONMENTS } from "@/utils/Environment";
-
-import "@/styles/global.scss";
 
 const lightMode = ref(
   !(
@@ -22,23 +24,20 @@ const theme = computed(() => {
   return lightMode.value ? "light" : "dark";
 });
 
-const commands = ref([]);
-const defaultsForm = ref(Object.assign({}, Turtle.defaults));
-const defaultsCurrent = ref(Object.assign({}, Turtle.defaults));
-const renderer = ref(null);
+const lsystem = ref({
+  axiom: "m{0x594d30, 0.9, 0} A{0.2}",
+  productions:
+    "A{r} -> l{0.2, r, r} +x +y +z [ [ A{r/2} ] -x A{r/2} ] -x -y -z l{0.2, r, r} [ -x l{0.2, r, r/2} A{r/2} m{0xf695c3, 0.7, 0} sphere ] +x A{r/2}\nl{a, b, c} -> l{a*2.5, b, c}\nl{a, b, c} -> l{a*2, b, c}\nsphere -> sphere{random()/7+0.1}",
+  iterations: 4,
+});
+const defaults = ref(Object.assign({}, Turtle.defaults));
 const environment = ref({
   autoRotate: true,
   modelAngle: 0,
-  environment: ENVIRONMENTS[0],
+  envName: ENVIRONMENTS[0],
 });
 
-function updateTurtleDefaults() {
-  defaultsCurrent.value = Object.assign({}, defaultsForm.value);
-}
-
-const nonNegRule = [
-  (v) => (Number.isFinite(v) && v >= 0) || "Must be a non-negative number.",
-];
+const commands = ref([]);
 </script>
 
 <template>
@@ -66,36 +65,28 @@ const nonNegRule = [
       touchless
     >
       <v-container>
+        <v-select label="Preset" outlined></v-select>
         <v-expansion-panels v-model="panels" multiple>
           <v-expansion-panel>
             <v-expansion-panel-title>Defaults</v-expansion-panel-title>
             <v-expansion-panel-text>
-              <v-form>
-                <v-text-field
-                  v-for="prop of Object.keys(defaultsForm)"
-                  v-model="defaultsForm[prop]"
-                  :label="prop"
-                  type="number"
-                  step="0.1"
-                  :rules="nonNegRule"
-                  variant="outlined"
-                  color="accent"
-                  bg-color="grey"
-                ></v-text-field>
-                <v-btn
-                  @click="updateTurtleDefaults"
-                  color="accent"
-                  type="submit"
-                  block
-                  >Update</v-btn
-                >
-              </v-form>
+              <DefaultsForm
+                v-model:length="defaults.length"
+                v-model:angle="defaults.angle"
+                v-model:radius="defaults.radius"
+                v-model:size="defaults.size"
+              ></DefaultsForm>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
             <v-expansion-panel-title>L-system</v-expansion-panel-title>
             <v-expansion-panel-text eager>
-              <LSGenerator @generate="(x) => (commands = x)"></LSGenerator>
+              <LSForm
+                v-model:axiom="lsystem.axiom"
+                v-model:productions="lsystem.productions"
+                v-model:iterations="lsystem.iterations"
+                @generate="(x) => (commands = x)"
+              ></LSForm>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -103,30 +94,12 @@ const nonNegRule = [
               >Environment Settings</v-expansion-panel-title
             >
             <v-expansion-panel-text>
-              <v-form>
-                <v-switch
-                  v-model="environment.autoRotate"
-                  label="Autorotate"
-                  inset
-                ></v-switch>
-                <v-label>Angle</v-label>
-                <v-slider
-                  v-model="environment.modelAngle"
-                  label="Angle"
-                  :step="0.01"
-                  :min="0"
-                  :max="2 * Math.PI"
-                  color="accent"
-                  thumb-label
-                  ticks
-                ></v-slider>
-                <v-select
-                  label="Environment"
-                  :items="ENVIRONMENTS.map((item) => item.name)"
-                  v-model="environment.environment"
-                  outlined
-                ></v-select>
-              </v-form>
+              <EnvironmentForm
+                v-model:autoRotate="environment.autoRotate"
+                v-model:modelAngle="environment.modelAngle"
+                v-model:envName="environment.envName"
+              >
+              </EnvironmentForm>
             </v-expansion-panel-text>
           </v-expansion-panel>
           <v-expansion-panel>
@@ -141,10 +114,10 @@ const nonNegRule = [
       <RenderWindow
         ref="renderer"
         :commands="commands"
-        :defaults="defaultsCurrent"
+        :defaults="defaults"
         :autoRotate="environment.autoRotate"
         :modelAngle="environment.modelAngle"
-        :environment="environment.environment"
+        :environment="environment.envName"
       />
     </v-main>
   </v-app>
