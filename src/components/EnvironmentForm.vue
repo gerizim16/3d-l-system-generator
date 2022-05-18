@@ -34,9 +34,9 @@ const emit = defineEmits(
       :model-value="props.modelAngle"
       @update:model-value="(x) => $emit('update:modelAngle', x)"
       label="Angle"
-      :step="0.01"
+      :step="1"
       :min="0"
-      :max="2 * Math.PI"
+      :max="360"
       color="accent"
       thumb-label
       ticks

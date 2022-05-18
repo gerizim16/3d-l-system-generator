@@ -22,6 +22,7 @@ const data = reactive(Object.assign({}, props));
 
 watch(props, (new_props) => {
   Object.assign(data, new_props);
+  submit();
 });
 
 const emit = defineEmits(
@@ -54,6 +55,10 @@ function submit() {
 onMounted(() => {
   submit();
 });
+
+defineExpose({
+  submit,
+});
 </script>
 
 <template>
@@ -83,8 +88,8 @@ onMounted(() => {
           variant="text"
           icon="mdi-minus"
           :color="color"
-          @click="iterations--"
-          :disabled="iterations <= 0"
+          @click="data.iterations--"
+          :disabled="data.iterations <= 0"
         ></v-btn>
       </template>
 
@@ -94,7 +99,7 @@ onMounted(() => {
           variant="text"
           icon="mdi-plus"
           :color="color"
-          @click="iterations++"
+          @click="data.iterations++"
         ></v-btn>
       </template>
     </v-slider>

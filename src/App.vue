@@ -1,7 +1,7 @@
 <script setup>
 import "@/styles/global.scss";
 
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { computed } from "@vue/reactivity";
 
 import RenderWindow from "./components/RenderWindow.vue";
@@ -11,6 +11,7 @@ import EnvironmentForm from "./components/EnvironmentForm.vue";
 
 import Turtle from "@/utils/Turtle";
 import { ENVIRONMENTS } from "@/utils/Environment";
+import PRESETS from "@/utils/presets";
 
 const lightMode = ref(
   !(
@@ -36,8 +37,19 @@ const environment = ref({
   modelAngle: 0,
   envName: ENVIRONMENTS[0],
 });
+const presetName = ref(PRESETS[0].name);
 
 const commands = ref([]);
+
+watch(
+  () => presetName.value,
+  (new_val) => {
+    const p = PRESETS.find((x) => x.name === new_val);
+    lsystem.value = Object.assign({}, p.lsystem);
+    defaults.value = Object.assign({}, p.defaults);
+    environment.value = Object.assign({}, p.environment);
+  }
+);
 </script>
 
 <template>
@@ -65,7 +77,12 @@ const commands = ref([]);
       touchless
     >
       <v-container>
-        <v-select label="Preset" outlined></v-select>
+        <v-select
+          label="Preset"
+          :items="PRESETS.map((x) => x.name)"
+          v-model="presetName"
+          outlined
+        ></v-select>
         <v-expansion-panels v-model="panels" multiple>
           <v-expansion-panel>
             <v-expansion-panel-title>Defaults</v-expansion-panel-title>
@@ -112,12 +129,11 @@ const commands = ref([]);
 
     <v-main>
       <RenderWindow
-        ref="renderer"
         :commands="commands"
         :defaults="defaults"
         :autoRotate="environment.autoRotate"
         :modelAngle="environment.modelAngle"
-        :environment="environment.envName"
+        :env-name="environment.envName"
       />
     </v-main>
   </v-app>

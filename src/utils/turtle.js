@@ -1,4 +1,5 @@
 import * as THREE from "three";
+import { Vector3 } from "three";
 
 function assignExisting(target, source) {
   Object.keys(source)
@@ -8,7 +9,7 @@ function assignExisting(target, source) {
 
 const defaults = Object.freeze({
   length: 0.2,
-  angle: 0.4,
+  angle: 25,
   radius: 0.05,
   size: 0.3,
 });
@@ -35,12 +36,24 @@ export default class Turtle {
 
     this.defaults = Object.assign({}, Turtle.defaults);
 
+    this.tmpVec = new Vector3();
+
     this.reset();
   }
 
+  getPos() {
+    return this.object.getWorldPosition(this.tmpVec);
+  }
+
+  getDir() {
+    return this.object.getWorldDirection(this.tmpVec);
+  }
+
   reset() {
-    this.pos = new THREE.Vector3();
-    this.dir = new THREE.Vector3(0, 1, 0);
+    this.object = new THREE.Object3D();
+    this.object.lookAt(new THREE.Vector3(0, 1, 0));
+    // this.getPos() = new THREE.Vector3();
+    // this.getDir() = new THREE.Vector3(0, 1, 0);
     this.tension = 0.5;
     this.radius = this.defaults.radius;
     this.stack = [];
@@ -102,35 +115,39 @@ export default class Turtle {
   }
 
   forward(length = this.defaults.length) {
-    this.pos.addScaledVector(this.dir, length);
-    if (this.drawing) this.currentCurve.push(this.pos.clone());
+    this.object.translateZ(length);
+    // this.getPos().addScaledVector(this.getDir(), length);
+    if (this.drawing) this.currentCurve.push(this.getPos().clone());
     return this;
   }
 
-  rotate(axis, angle) {
-    this.dir.applyAxisAngle(axis, angle);
-    return this;
-  }
+  // rotate(axis, angle) {
+  //   this.getDir().applyAxisAngle(axis, angle);
+  //   return this;
+  // }
 
   rotateX(angle = this.defaults.angle) {
-    this.rotate(new THREE.Vector3(1, 0, 0), angle);
+    this.object.rotateX(THREE.MathUtils.degToRad(angle));
+    // this.rotate(new THREE.Vector3(1, 0, 0), angle);
     return this;
   }
 
   rotateY(angle = this.defaults.angle) {
-    this.rotate(new THREE.Vector3(0, 1, 0), angle);
+    this.object.rotateY(THREE.MathUtils.degToRad(angle));
+    // this.rotate(new THREE.Vector3(0, 1, 0), angle);
     return this;
   }
 
   rotateZ(angle = this.defaults.angle) {
-    this.rotate(new THREE.Vector3(0, 0, 1), angle);
+    this.object.rotateZ(THREE.MathUtils.degToRad(angle));
+    // this.rotate(new THREE.Vector3(0, 0, 1), angle);
     return this;
   }
 
   startLine() {
     if (this.drawing) return this;
     this.drawing = true;
-    this.currentCurve.push(this.pos.clone());
+    this.currentCurve.push(this.getPos().clone());
     return this;
   }
 
@@ -179,9 +196,9 @@ export default class Turtle {
     const mesh = new THREE.Mesh(geometry, this.material);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
-    mesh.lookAt(this.dir);
+    mesh.lookAt(this.getDir());
     mesh.geometry.rotateX(Math.PI / 2);
-    mesh.position.copy(this.pos);
+    mesh.position.copy(this.getPos());
     mesh.geometry.translate(0, 0, length / 2);
     this.group.add(mesh);
 
@@ -195,8 +212,9 @@ export default class Turtle {
       this.startLine();
     }
     this.stack.push({
-      pos: this.pos.clone(),
-      dir: this.dir.clone(),
+      object: this.object.clone(false),
+      // pos: this.getPos().clone(),
+      // dir: this.getDir().clone(),
       material: this.material,
       tension: this.tension,
       radius: this.radius,
@@ -220,7 +238,7 @@ export default class Turtle {
     this.geometries.push(geometry);
 
     const mesh = new THREE.Mesh(geometry, this.material);
-    mesh.position.copy(this.pos);
+    mesh.position.copy(this.getPos());
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     this.group.add(mesh);
@@ -239,8 +257,8 @@ export default class Turtle {
     const mesh = new THREE.Mesh(geometry, this.material);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
-    mesh.lookAt(this.dir);
-    mesh.position.copy(this.pos);
+    mesh.lookAt(this.getDir());
+    mesh.position.copy(this.getPos());
     this.group.add(mesh);
 
     return this;
@@ -259,8 +277,8 @@ export default class Turtle {
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     mesh.geometry.rotateX(Math.PI / 2);
-    mesh.lookAt(this.dir);
-    mesh.position.copy(this.pos);
+    mesh.lookAt(this.getDir());
+    mesh.position.copy(this.getPos());
     this.group.add(mesh);
 
     return this;

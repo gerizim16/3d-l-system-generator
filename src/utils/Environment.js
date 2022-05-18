@@ -92,12 +92,10 @@ export class NatureEnvironment extends Environment {
 
     dirLight.castShadow = true;
 
-    dirLight.shadow.mapSize.width = 2048;
-    dirLight.shadow.mapSize.height = 2048;
-    dirLight.shadow.radius = 4;
-    dirLight.shadow.blurSamples = 10;
+    dirLight.shadow.mapSize.width = 1024;
+    dirLight.shadow.mapSize.height = 1024;
 
-    const d = 50;
+    const d = 30;
 
     dirLight.shadow.camera.left = -d;
     dirLight.shadow.camera.right = d;
@@ -243,12 +241,10 @@ export class SkyEnvironment extends Environment {
 
     dirLight.castShadow = true;
 
-    dirLight.shadow.mapSize.width = 2048;
-    dirLight.shadow.mapSize.height = 2048;
-    dirLight.shadow.radius = 4;
-    dirLight.shadow.blurSamples = 10;
+    dirLight.shadow.mapSize.width = 1024;
+    dirLight.shadow.mapSize.height = 1024;
 
-    const d = 50;
+    const d = 30;
 
     dirLight.shadow.camera.left = -d;
     dirLight.shadow.camera.right = d;
@@ -312,12 +308,10 @@ export class SunsetEnvironment extends Environment {
 
     dirLight.castShadow = true;
 
-    dirLight.shadow.mapSize.width = 2048;
-    dirLight.shadow.mapSize.height = 2048;
-    dirLight.shadow.radius = 4;
-    dirLight.shadow.blurSamples = 10;
+    dirLight.shadow.mapSize.width = 1024;
+    dirLight.shadow.mapSize.height = 1024;
 
-    const d = 50;
+    const d = 30;
 
     dirLight.shadow.camera.left = -d;
     dirLight.shadow.camera.right = d;
@@ -377,7 +371,7 @@ export class SunsetEnvironment extends Environment {
       density: 0.96,
       decay: 0.98,
       weight: 0.1,
-      exposure: 0.6,
+      exposure: 0.5,
     });
 
     const smaaEffect = new SMAAEffect();

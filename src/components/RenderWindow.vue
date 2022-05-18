@@ -25,7 +25,7 @@ const props = defineProps({
   autoRotate: {
     default: true,
   },
-  environment: {
+  envName: {
     default: ENVIRONMENTS[0].name,
   },
   defaults: {
@@ -41,6 +41,7 @@ const camera = new THREE.PerspectiveCamera(50, 2, 1, 1000);
 
 const renderer = new THREE.WebGLRenderer();
 renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 const canvas = renderer.domElement;
 
@@ -55,32 +56,37 @@ const controls = new OrbitControls(camera, renderer.domElement);
 
 const env = new EnvironmentSwitcher(scene, composer, camera);
 
-watch([() => props.commands, props.defaults], ([commands, defaults]) => {
-  turtle.setDefaults(defaults);
-  turtle.reset();
-  for (const command of commands) {
-    turtle.do(command);
-  }
+watch(
+  [() => props.commands, () => props.defaults],
+  ([commands, defaults]) => {
+    turtle.setDefaults(defaults);
+    turtle.reset();
+    for (const command of commands) {
+      turtle.do(command);
+    }
+    turtle.group.rotation.y = THREE.MathUtils.degToRad(props.modelAngle);
 
-  // bounding box
-  const aabb = new THREE.Box3().setFromObject(turtle.group);
-  const target = new THREE.Vector3();
-  aabb.getCenter(target);
-  target.setX(0);
-  camera.position.set(0, target.y, -15);
-  controls.target.copy(target);
-  controls.update();
-});
+    // bounding box
+    const aabb = new THREE.Box3().setFromObject(turtle.group);
+    const target = new THREE.Vector3();
+    aabb.getCenter(target);
+    target.setX(0);
+    camera.position.set(0, target.y, -15);
+    controls.target.copy(target);
+    controls.update();
+  },
+  { deep: true }
+);
 
 watch(
   () => props.modelAngle,
   (angle) => {
-    turtle.group.rotation.y = angle;
+    turtle.group.rotation.y = THREE.MathUtils.degToRad(angle);
   }
 );
 
 watch(
-  () => props.environment,
+  () => props.envName,
   (name) => {
     env.setEnvironment(name);
   }
