@@ -1,7 +1,7 @@
 <script setup>
 import "@/styles/global.scss";
 
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { computed } from "@vue/reactivity";
 
 import RenderWindow from "./components/RenderWindow.vue";
@@ -25,19 +25,10 @@ const theme = computed(() => {
   return lightMode.value ? "light" : "dark";
 });
 
-const lsystem = ref({
-  axiom: "m{0x594d30, 0.9, 0} A{0.2}",
-  productions:
-    "A{r} -> l{0.2, r, r} +x +y +z [ [ A{r/2} ] -x A{r/2} ] -x -y -z l{0.2, r, r} [ -x l{0.2, r, r/2} A{r/2} m{0xf695c3, 0.7, 0} sphere ] +x A{r/2}\nl{a, b, c} -> l{a*2.5, b, c}\nl{a, b, c} -> l{a*2, b, c}\nsphere -> sphere{random()/7+0.1}",
-  iterations: 4,
-});
+const lsystem = ref({});
 const defaults = ref(Object.assign({}, Turtle.defaults));
-const environment = ref({
-  autoRotate: true,
-  modelAngle: 0,
-  envName: ENVIRONMENTS[0],
-});
-const presetName = ref(PRESETS[0].name);
+const environment = ref({});
+const presetName = ref("");
 
 const commands = ref([]);
 
@@ -50,6 +41,10 @@ watch(
     environment.value = Object.assign({}, p.environment);
   }
 );
+
+onMounted(() => {
+  presetName.value = PRESETS[0].name;
+});
 </script>
 
 <template>
