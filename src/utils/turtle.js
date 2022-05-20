@@ -90,8 +90,12 @@ export default class Turtle {
     metalness = 0.1,
     flatShading = false,
     fog = true,
-    wireframe = false
+    wireframe = false,
+    transparent = false,
+    opacity = 1,
+    side = 0
   ) {
+    const s = [THREE.FrontSide, THREE.BackSide, THREE.DoubleSide];
     this.material = new THREE.MeshStandardMaterial({
       color,
       roughness,
@@ -99,6 +103,9 @@ export default class Turtle {
       flatShading,
       fog,
       wireframe,
+      transparent,
+      opacity,
+      side: s[side],
     });
     this.materials.push(this.material);
     return this;
@@ -233,11 +240,23 @@ export default class Turtle {
     return this;
   }
 
-  sphere(radius = this.defaults.size / 2, ...args) {
-    const geometry = new THREE.IcosahedronGeometry(radius, 5);
+  sphere(
+    radius = this.defaults.size / 2,
+    widthSeg = 12,
+    heightSeg = 6,
+    ...args
+  ) {
+    const geometry = new THREE.SphereGeometry(
+      radius,
+      widthSeg,
+      heightSeg,
+      ...args
+    );
     this.geometries.push(geometry);
 
-    const mesh = new THREE.Mesh(geometry, this.material, ...args);
+    const mesh = new THREE.Mesh(geometry, this.material);
+    mesh.geometry.rotateX(Math.PI / 2);
+    mesh.lookAt(this.getDir());
     mesh.position.copy(this.getPos());
     mesh.castShadow = true;
     mesh.receiveShadow = true;
