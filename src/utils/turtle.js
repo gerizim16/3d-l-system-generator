@@ -233,11 +233,11 @@ export default class Turtle {
     return this;
   }
 
-  sphere(radius = this.defaults.size / 2) {
+  sphere(radius = this.defaults.size / 2, ...args) {
     const geometry = new THREE.IcosahedronGeometry(radius, 5);
     this.geometries.push(geometry);
 
-    const mesh = new THREE.Mesh(geometry, this.material);
+    const mesh = new THREE.Mesh(geometry, this.material, ...args);
     mesh.position.copy(this.getPos());
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -249,9 +249,10 @@ export default class Turtle {
   box(
     width = this.defaults.size,
     height = this.defaults.size,
-    depth = this.defaults.size
+    depth = this.defaults.size,
+    ...args
   ) {
-    const geometry = new THREE.BoxGeometry(width, height, depth);
+    const geometry = new THREE.BoxGeometry(width, height, depth, ...args);
     this.geometries.push(geometry);
 
     const mesh = new THREE.Mesh(geometry, this.material);
@@ -264,13 +265,13 @@ export default class Turtle {
     return this;
   }
 
-  cube(side = this.defaults.size) {
-    this.box(side, side, side);
+  cube(side = this.defaults.size, ...args) {
+    this.box(side, side, side, ...args);
     return this;
   }
 
-  cone(radius = this.defaults.size / 2, height = this.defaults.size) {
-    const geometry = new THREE.ConeGeometry(radius, height);
+  cone(radius = this.defaults.size / 2, height = this.defaults.size, ...args) {
+    const geometry = new THREE.ConeGeometry(radius, height, ...args);
     this.geometries.push(geometry);
 
     const mesh = new THREE.Mesh(geometry, this.material);
