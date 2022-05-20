@@ -1,6 +1,194 @@
-# 3D-L-system-generator
+# 3D L-system generator
 
-This template should help get you started developing with Vue 3 in Vite.
+Visit the app [here](https://gerizim16.github.io/3d-l-system-generator/).
+
+![](images/render.gif)
+
+The language: Stochastic, Parametric, Context-free, L-System.
+
+## Syntax
+
+### Symbols
+Symbols may have parameters. They are of the format:
+
+```
+symbol{param1, param2, ...}
+```
+
+Parameters are separted by commas. Parameters are optional, thus, the following is also valid:
+```
+symbol
+```
+
+Symbols may either be:
+- [Special symbols (commands)](#commands): uses lowercase characters. These symbols are used to control the turtle. Examples are: `+x`, `l`, `-z`.
+- Non-special symbols (variables): uses uppercase characters. Examples are: `A`, `BRANCH`, `X`.
+
+### Commands
+
+| Symbol | Parameters | Description |
+| -----: | :--------- | :---------- |
+| `m{color, roughness, metalness, flatShading, fog, wireframe, transparent, opacity, side}` | <ul><li>`color`=`0xffffff` : color in hex<li>`roughness`=`0.1` : `[0, 1]`<li>`metalness`=`0.1` : `[0, 1]`<li>`flatShading`=`false` : `true` or `false`<li>`fog`=`true` : influence material with fog<li>`wireframe`=`false` : render as wireframe<li>`transparent`=`false` : enable transparency<li>`opacity`=`1` : opacity when transparency is enabled<li>`side`=`0` : `0`=render front side, `1`=render back side, `2`=render both sides</ul> | Set current turtle material. |
+| `f{len}` | <ul><li>`len`=`defaults.length` : length</ul> | Move the turtle forward $len$ units.
+| `l{len, startR, endR}` | <ul><li>`len`=`defaults.length` : length<li>`startR`=`turtle.radius` : starting radius<li>`endR`=`turtle.radius` : ending radius</ul> | Draw a cylinder of `len` units and move forward `len` units starting with a radius of `startR` and ending with `endR`.
+| `r{rad}` | <ul><li>`rad`=`defaults.radius` : radius</ul> | Set the radius of the turtle to `rad`.
+| `s` | | Begin drawing a curve. |
+| `e` | | End the curve, draw the finished curve. |
+| `t{ten}` | <ul><li>`ten`=`0.5` : tension</ul> | Set the tension of the curve. `[0, 1]` |
+| `+x{angle}` | <ul><li>`angle`=`defaults.angle` : angle in degrees</ul> | Pitch control. Increase pitch by `angle` degrees. |
+| `-x{angle}` | <ul><li>`angle`=`defaults.angle` : angle in degrees</ul> | Pitch control. Decrease pitch by `angle` degrees. |
+| `+y{angle}` | <ul><li>`angle`=`defaults.angle` : angle in degrees</ul> | Yaw control. Increase yaw by `angle` degrees. |
+| `-y{angle}` | <ul><li>`angle`=`defaults.angle` : angle in degrees</ul> | Yaw control. Decrease yaw by `angle` degrees. |
+| `-z{angle}` | <ul><li>`angle`=`defaults.angle` : angle in degrees</ul> | Roll control. Increase roll by `angle` degrees. |
+| `-z{angle}` | <ul><li>`angle`=`defaults.angle` : angle in degrees</ul> | Roll control. Decrease roll by `angle` degrees. |
+| `[` | | Push state to stack. State includes turtle position, material, tension, radius |
+| `]` | | Pop state from stack and set it to current state. |
+| `sphere{r, widthSeg, heightSeg, phi, phiLen, theta, thetaLen}` | <ul><li>`r`=`defaults.size/2` : radius<li>`widthSegments`=`12` : number of horizontal segments `[3, inf)`<li>`heightSegments`=`6` : number of vertical segments `[2, inf)`<li>`phiStart`=`0` : horizontal starting angle<li>`phiLength`=`2*pi` : horizontal sweep angle size<li>`thetaStart`=`0` : vertical starting angle<li>`thetaLength`=`pi` : vertical sweep angle size</ul> | Draws a sphere centered at the turtle's position. May be used to draw "leaves": `m{0xf695c3, 0.7, 0, false, true, false, true, 0.8, 2} sphere{random()/7+0.1, 12, 6, 0, pi/2, 0, pi}`<br><img src="images/leaves.png" alt="drawing" width="200"/> | 
+| `box{w, h, d}` | <ul><li>`w`=`defaults.size` : width<li>`h`=`defaults.size` : height<li>`d`=`defaults.size` : depth</ul> | Draws a box centered at the turtle's position and aligned with the turtle's axes. |
+| `cube{s}` | <ul><li>`s`=`defaults.size` : side length</ul> | Draws a cube centered at the turtle's position and aligned with the turtle's axes. |
+| `cone{r, h, radialSeg}` | <ul><li>`r`=`defaults.size/2` : base radius<li>`h`=`defaults.size` : height<li>`radialSeg`=`8` : number of segmented faces around the circumference of the cone</ul> | Draws a cone centered at the turtle's position and aligned with the turtle's axes. Can be used to draw pyramids such as a square base pyramid: `cone{r, h, 4}`. |
+
+### Axiom
+
+Axiom is a list of symbols separated by whitespace character(s). It is of the format:
+
+```
+symbol1{param1_1, param1_2, ...} symbol2 ...
+```
+
+Parameters of symbols in an axiom must evaluate to a constant. Some valid constant parameters are:
+
+```c
+symbol{sin(pi/2)}   // 1
+symbol{sin(30 deg)} // 0.5
+symbol{pi}          // 3.1415926535898
+symbol{1.2}         // 1.2
+symbol{log(e)}      // 1
+symbol{true}        // true
+symbol{false}       // false
+symbol{random()}
+```
+
+Parameters are evaluated using [math.js](https://mathjs.org/). More functions can be found [here](https://mathjs.org/docs/reference/functions.html).
+
+### Production rules
+
+Production rules are of the format:
+
+```
+symbol{var1, var2, ...} -> new_symbol1{param1, param2, ...} new_symbol2 new_symbol3 ...
+```
+
+Parameters of the symbol on the left hand side must be variables. For clarity, an example is the following:
+```
+symbol{a, b, c} -> new_symbol1{a + 1} new_symbol2{2 * b, c}
+```
+
+All parameters are optional. Thus, the following is also valid:
+
+```
+symbol -> new_symbol1 ...
+```
+
+Special symbols may be used in the left hand side in production rules. Thus, the following is valid:
+```
++x -> +x l
+```
+
+### Simple examples
+
+#### Simple
+```
+iterations: 2
+axiom: X
+production rules:
+X -> +x l X
+
+result:
++x l +x l X
+```
+
+#### Special symbol replacement
+```
+iterations: 2
+axiom: l
+production rules:
+l -> +x l
+
+result:
++x +x l
+```
+
+#### Stochastic
+```
+iterations: 2
+axiom: START
+production rules:
+START -> A START
+START -> B START
+
+possible results:
+A A START
+A B START
+B A START
+B B START
+```
+
+#### Parametrized
+```
+iterations: 1
+axiom: l{1}
+production rules:
+l{x} -> l{sin(x deg)} +x{x} l{2 * x}
+
+result:
+l{0.017452406437284} +x{1} l{2}
+```
+## Examples
+
+### Plant
+```
+iterations: 4
+axiom: m{0x594d30, 0.9, 0} A{0.2}
+production rules:
+A{r} -> l{0.2, r, r} +x +y +z [ [ A{r/2} ] -x A{r/2} ] -x -y -z l{0.2, r, r} [ -x l{0.2, r, r/2} A{r/2} m{0xf695c3, 0.7, 0} sphere ] +x A{r/2}
+l{a, b, c} -> l{a*2.5, b, c}
+l{a, b, c} -> l{a*2, b, c}
+sphere -> sphere{random()/7+0.1}
+```
+
+![](images/plant.png)
+
+### Hilbert
+```
+iterations: 3
+axiom: t{0.5} s X e
+production rules:
+X -> +x -z X f +x -z X f X +y f +x +z +z X f X -x f -y +z +z X f X +y f +z X +y +z
+```
+
+![](images/hilbert.png)
+
+### Sierpinski
+```
+iterations: 3
+axiom: m{0xffffff, 0.9, 0.9, true} f{8/2} cone{8, 8, 3}
+production rules:
+cone{s, s} -> f{s/4} cone{s/2, s/2, 3} f{-s/2} [ +x{90} f{s*sin(pi/6)} -x{90} cone{s/2, s/2, 3} ] [ +z{120} +x{90} f{s*sin(pi/6)} -x{90} cone{s/2, s/2, 3} ] [ -z{120} +x{90} f{s*sin(pi/6)} -x{90} cone{s/2, s/2, 3} ] f{s/4}
+```
+
+![](images/sierpinski.png)
+
+## Contributions
+
+|                   | ABDAO, Regina | VILLARANTE, Gerizim |
+| ----------------: | :------------ | :------------------ |
+| Conceptualization |               | Proposed 3D L-systems |
+| Code              |               | <ul><li>Initialized project and libraries to use<li>Language parser<li>Turtle commands<li>Environments: Sunset, Dark Neon, Nature, Sky</ul> |
+| Examples created  |               | <ul><li>Plant<li>Hilbert curve<li>Sierpinski pyramid</ul> |
+| Documentation     |               | Helped in overall documentation |
+
+# Developer
 
 ## Recommended IDE Setup
 
@@ -28,8 +216,4 @@ npm run dev
 npm run build
 ```
 
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+# License
