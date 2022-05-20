@@ -291,19 +291,19 @@ export default class Turtle {
         this.rotateX(command.params[0]);
         break;
       case "-x":
-        this.rotateX(command.params[0] ?? -this.defaults.angle);
+        this.rotateX(-(command.params[0] ?? this.defaults.angle));
         break;
       case "+y":
         this.rotateY(command.params[0]);
         break;
       case "-y":
-        this.rotateY(command.params[0] ?? -this.defaults.angle);
+        this.rotateY(-(command.params[0] ?? this.defaults.angle));
         break;
       case "+z":
         this.rotateZ(command.params[0]);
         break;
       case "-z":
-        this.rotateZ(command.params[0] ?? -this.defaults.angle);
+        this.rotateZ(-(command.params[0] ?? this.defaults.angle));
         break;
       case "f":
         this.forward(...command.params);
