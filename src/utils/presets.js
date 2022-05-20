@@ -59,4 +59,19 @@ export default Object.freeze([
       envName: "Dark Neon",
     },
   },
+  {
+    name: "Sierpinski Pyramid",
+    lsystem: {
+      axiom: "m{0xffffff, 0.9, 0.9, true} f{8/2} cone{8, 8, 3}",
+      productions:
+        "cone{s, s} -> f{s/4} cone{s/2, s/2, 3} f{-s/2} [ +x{90} f{s*sin(pi/6)} -x{90} cone{s/2, s/2, 3} ] [ +z{120} +x{90} f{s*sin(pi/6)} -x{90} cone{s/2, s/2, 3} ] [ -z{120} +x{90} f{s*sin(pi/6)} -x{90} cone{s/2, s/2, 3} ] f{s/4}",
+      iterations: 3,
+    },
+    defaults: { length: 1, angle: 90, radius: 0.2, size: 0.3 },
+    environment: {
+      autoRotate: false,
+      modelAngle: 60,
+      envName: "Dark Neon",
+    },
+  },
 ]);
