@@ -2,7 +2,7 @@
 
 Visit the app [here](https://gerizim16.github.io/3d-l-system-generator/).
 
-https://user-images.githubusercontent.com/29599464/169649371-33a52153-5807-47c7-9d7c-6f82ee21a5e4.mp4
+![](images/render2.gif)
 
 The language: Stochastic, Parametric, Context-free, L-System.
 
