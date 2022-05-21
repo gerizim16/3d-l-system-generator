@@ -216,4 +216,9 @@ npm run dev
 npm run build
 ```
 
+### Push Compiled Production Build
+```sh
+git subtree push --prefix dist origin gh-pages
+```
+
 # License
