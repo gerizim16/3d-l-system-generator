@@ -12,6 +12,7 @@ import EnvironmentForm from "./components/EnvironmentForm.vue";
 import Turtle from "@/utils/Turtle";
 import { ENVIRONMENTS } from "@/utils/Environment";
 import PRESETS from "@/utils/presets";
+import HelpDocument from "./components/HelpDocument.vue";
 
 const lightMode = ref(
   !(
@@ -116,7 +117,9 @@ onMounted(() => {
           </v-expansion-panel>
           <v-expansion-panel>
             <v-expansion-panel-title>Help</v-expansion-panel-title>
-            <v-expansion-panel-text>Help here</v-expansion-panel-text>
+            <v-expansion-panel-text>
+              <HelpDocument></HelpDocument>
+            </v-expansion-panel-text>
           </v-expansion-panel>
         </v-expansion-panels>
       </v-container>
