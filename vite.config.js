@@ -19,6 +19,9 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1600,
+  },
   base:
     process.env.NODE_ENV === "production"
       ? "/3d-l-system-generator/" // prod
