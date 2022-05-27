@@ -285,7 +285,7 @@ production rules:
 f -> f +x f -x f -x f +x f
 ```
 
-![](images/penta.png)
+![](images/pattern.png)
 ## Contributions
 
 |                   | ABDAO, Regina | VILLARANTE, Gerizim |
@@ -293,7 +293,7 @@ f -> f +x f -x f -x f +x f
 | Conceptualization | Proposed 2D L-Systems | Proposed 3D L-systems |
 | Code              | <ul><li>Environments: Desert, Dark Pink</ul> | <ul><li>Initialized project and libraries to use<li>Language parser<li>Turtle commands<li>Environments: Sunset, Dark Neon, Nature, Sky</ul> |
 | Examples created  | <ul><li>Plant 2<li>Palm Tree<li>Tree<li>Cartoon Tree<li>Flower<li>2D Examples</ul> | <ul><li>Plant<li>Hilbert curve<li>Sierpinski pyramid</ul> |
-| Documentation     | Helped and reviewed overall documentation | Helped in overall documentation |
+| Documentation     | Helped and finalized overall documentation | Helped in overall documentation |
 
 ## References and Inspiration
 <ul><li><a href="http://www.geocities.ws/gplatl/LSystem/LSystem.html">3d Lindenmayer Systems by Mr. Pix</a><li><a href="https://en.wikipedia.org/wiki/L-system">L-Systems</a><li><a href="https://observablehq.com/@kelleyvanevert/3d-l-systems">3d L-Systems by Kelley van Evert</a></ul>
