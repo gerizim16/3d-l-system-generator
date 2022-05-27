@@ -179,6 +179,113 @@ cone{s, s} -> f{s/4} cone{s/2, s/2, 3} f{-s/2} [ +x{90} f{s*sin(pi/6)} -x{90} co
 
 ![](images/sierpinski.png)
 
+### Plant 2
+```
+iterations: 5
+axiom: s m{0x228B22} t{0.3} f X e
+production rules:
+X -> f{1} X [ -x +z{183} +y{10} f{1} X ] [ +x +z{16} +y{5} f{1} X ]
+```
+
+![](images/plant2.png)
+
+### Palm Tree
+```
+iterations: 8
+axiom: J m{0x00FF00} K K K K K K K K K K K K K K K K K K K K
+production rules:
+J -> J m{0x964B00} -y cone s f e
+K -> -z{30} [ -y{32} L A ]
+L -> L -y{4}
+A -> s f e [ -x{24} B ] -y{16} [ A ] [ +x{24} B ]
+B -> s f e -y{16} B
+cone -> m{0x964B00} cone{random()/7+0.3}
+```
+
+![](images/palmtree.png)
+
+### Tree
+```
+iterations: 9
+axiom: A B m{0x8B4513} sphere
+production rules:
+A -> s f f e
+B -> r{0.08} C I +z{60} B
+C -> C s f e
+E -> -y{4} E
+I -> r{0.04} J J J J J J J J
+J -> +z{60} [ -y{48} E G ]
+G -> r{0.08} C F [ -x{30} m{0x50C878} D sphere ] +y +y [ -x{30} m{0x50C878} D sphere ] G
+D -> F [ -x{30} ] +y [ +x{30} ] D
+cone -> m{0x50C878} cone{random()/5+0.1}
+sphere -> m{0x50C878, 0.7, 0, false, true, false, true, 0.8, 2} sphere{random()/7+1, 12, 6, 0, pi/2, 0, pi}
+```
+
+![](images/tree.png)
+
+### Cartoon Tree
+```
+iterations: 9
+axiom: A B m{0x8B4513} sphere
+production rules:
+A -> s f e
+B -> r{0.4} C I +z{60} B
+C -> C s f e
+E -> -y{4} E
+I -> r{0.4} J J J J J J J J
+J -> +z{60} [ -y{12} E G ]
+G -> r{0.08} C F [ -x{30} m{0x50C878} D cube ] +y +y [ -x{30} m{0x50C878} D cube ] G
+D -> F [ -x{30} ] +y [ +x{30} ] D
+sphere -> m{0x50C878} sphere{0.5}
+cube -> m{0x50C878} cube{1}
+```
+
+![](images/cartoontree.png)
+
+### Flower
+```
+iterations: 5
+axiom: m{0x00FF00} J m{0xFF0000} K K K K K K K KK K K K K K K K K K K K
+production rules:
+J -> J -y s f f f e m{0x00FF00}
+K -> -z{30} [ -y{32} L A ]
+L -> L -y{4}
+A -> s f e [ -x{24} B ] -y{16} [ A ] [ +x{24} B ]
+B -> s f e -y{16} B
+```
+
+![](images/flower.png)
+
+### Heighway Dragon (2D)
+```
+iterations: 5
+axiom: s t{0.7} f X e
+production rules:
+X -> X +x Y f +x
+Y -> -x f X -x Y
+```
+
+![](images/dragon.png)
+
+### Pentaplexity (2D)
+```
+iterations: 3
+axiom: s m{0x66cdaa} f +x +x f +x +x f +x +x f +x +x f e
+production rules:
+f -> s f +x +x f +x +x f +x{180} f -x f +x +x f e
+```
+
+![](images/penta.png)
+
+### Pattern (2D)
+```
+iterations: 4
+axiom: s f e
+production rules:
+f -> f +x f -x f -x f +x f
+```
+
+![](images/penta.png)
 ## Contributions
 
 |                   | ABDAO, Regina | VILLARANTE, Gerizim |

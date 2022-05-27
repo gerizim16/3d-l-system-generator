@@ -90,7 +90,7 @@ export default Object.freeze([
     },
   },
   {
-    name: "Palm Tree 1",
+    name: "Palm Tree",
     lsystem: {
       axiom: "J m{0x00FF00} K K K K K K K K K K K K K K K K K K K K",
       productions:
@@ -107,9 +107,9 @@ export default Object.freeze([
   {
     name: "Tree",
     lsystem: {
-      axiom: "A B m{0x8B4513} cone",
+      axiom: "A B m{0x8B4513} sphere",
       productions:
-        "A -> s f f e\nB -> r{0.08} C I +z{60} B\nC -> C s f e\nE -> -y{4} E\nI -> r{0.04} J J J J J J J J\nJ -> +z{60} [ -y{48} E G ]\nG -> r{0.08} C F [ -x{30} m{0x50C878} D cube ] +y +y [ -x{30} m{0x50C878} D cube ] G\nD -> F [ -x{30} ] +y [ +x{30} ] D\ncone -> m{0x50C878} cone{random()/5+0.1}\ncube -> m{0x50C878} cube{0.2}",
+        "A -> s f f e\nB -> r{0.08} C I +z{60} B\nC -> C s f e\nE -> -y{4} E\nI -> r{0.04} J J J J J J J J\nJ -> +z{60} [ -y{48} E G ]\nG -> r{0.08} C F [ -x{30} m{0x50C878} D sphere ] +y +y [ -x{30} m{0x50C878} D sphere ] G\nD -> F [ -x{30} ] +y [ +x{30} ] D\ncone -> m{0x50C878} cone{random()/5+0.1}\nsphere -> m{0x50C878, 0.7, 0, false, true, false, true, 0.8, 2} sphere{random()/7+1, 12, 6, 0, pi/2, 0, pi}",
       iterations: 9,
     },
     defaults: { length: 0.4, angle: 2, radius: 0.3, size: 0.2 },
@@ -195,7 +195,7 @@ export default Object.freeze([
     },
   },
   {
-    name: "Koch Curve (2D)",
+    name: "Pattern (2D)",
     lsystem: {
       axiom: "s f e",
       productions:
