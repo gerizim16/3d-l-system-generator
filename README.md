@@ -291,7 +291,7 @@ f -> f +x f -x f -x f +x f
 |                   | ABDAO, Regina | VILLARANTE, Gerizim |
 | ----------------: | :------------ | :------------------ |
 | Conceptualization | Proposed 2D L-Systems | Proposed 3D L-systems |
-| Code              | <ul><li>Environments: Desert, Dark Pink</ul> | <ul><li>Initialized project and libraries to use<li>Language parser<li>Turtle commands<li>Environments: Sunset, Dark Neon, Nature, Sky</ul> |
+| Code              | <ul><li>Environments: Desert, Dark Pink<li>Help Menu</ul> | <ul><li>Initialized project and libraries to use<li>Language parser<li>Turtle commands<li>Environments: Sunset, Dark Neon, Nature, Sky</ul> |
 | Examples created  | <ul><li>Plant 2<li>Palm Tree<li>Tree<li>Cartoon Tree<li>Flower<li>2D Examples</ul> | <ul><li>Plant<li>Hilbert curve<li>Sierpinski pyramid</ul> |
 | Documentation     | Helped and finalized overall documentation | Helped in overall documentation |
 

@@ -2,7 +2,7 @@
 
 <template>
   <v-container>
-    <p>Note: If lost, feel free to play around with the presets! Full details can be found <a href="https://github.com/gerizim16/3d-l-system-generator">here</a>.</p><br>
+    <p>Note: If lost, feel free to play around with the presets! Full details of the app can be found <a href="https://github.com/gerizim16/3d-l-system-generator">here</a>.</p><br>
     <h2>Symbols</h2> <br>
     <p> Symbols may have parameters. They are of the format: </p>
     <p class="code">symbol{param1, param2, ...}</p><br>
@@ -176,12 +176,11 @@
     transform: rotateX(180deg);
   }
   mark{ 
-    background-color: #b3aeae;
+    background-color: #73f5ea6e;
     font-family:'Courier New', Courier, monospace;
-    color:rgb(40, 42, 43)
   }
   .code{ 
-    background-color: #b3aeae;
+    background-color: #73f5ea6e;
     font-family: 'Courier New', Courier, monospace;
     text-align: center;
   }
