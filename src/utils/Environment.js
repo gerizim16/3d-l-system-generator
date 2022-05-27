@@ -135,6 +135,87 @@ export class NatureEnvironment extends Environment {
   }
 }
 
+export class DesertEnvironment extends Environment {
+  static name = "Desert";
+  constructor(scene, composer, camera) {
+    super(scene, composer, camera);
+    this.scene.fog = new THREE.FogExp2(0xfab48c, 0.02);
+
+    // sky
+    const sky = new Sky();
+    sky.scale.setScalar(300000);
+    this.scene.add(sky);
+    this.objects.push(sky);
+    this.geometries.push(sky.geometry);
+    this.materials.push(sky.material);
+    this.sun = new THREE.Vector3();
+
+    const uniforms = sky.material.uniforms;
+    uniforms["turbidity"].value = 5;
+    uniforms["rayleigh"].value = 0.4;
+    uniforms["mieCoefficient"].value = 0.001;
+    uniforms["mieDirectionalG"].value = 1;
+
+    const phi = THREE.MathUtils.degToRad(90 - 50);
+    const theta = THREE.MathUtils.degToRad(225);
+
+    this.sun.setFromSphericalCoords(100, phi, theta);
+
+    uniforms["sunPosition"].value.copy(this.sun);
+
+    // directional light
+    const dirLight = new THREE.DirectionalLight(0xfab48c, 1);
+    dirLight.color.setHSL(0.1, 1, 0.95);
+    dirLight.position.setFromSphericalCoords(1, phi, theta);
+    dirLight.position.multiplyScalar(20);
+    this.scene.add(dirLight);
+    this.lights.push(dirLight);
+
+    dirLight.castShadow = true;
+
+    dirLight.shadow.mapSize.width = 1024;
+    dirLight.shadow.mapSize.height = 1024;
+
+    const d = 30;
+
+    dirLight.shadow.camera.left = -d;
+    dirLight.shadow.camera.right = d;
+    dirLight.shadow.camera.top = d;
+    dirLight.shadow.camera.bottom = -d;
+
+    // hemilight
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
+    hemiLight.color.setHSL(0.6, 1, 0.6);
+    hemiLight.groundColor.setHSL(0.095, 1, 0.75);
+    hemiLight.position.set(0, 20, 0);
+    this.scene.add(hemiLight);
+    this.lights.push(hemiLight);
+
+    // floor
+    const groundGeo = new THREE.PlaneGeometry(10000, 10000);
+    const groundMat = new THREE.MeshStandardMaterial({
+      color: 0xfab48c,
+      roughness: 0.9,
+    });
+
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    this.scene.add(ground);
+    this.objects.push(ground);
+    this.geometries.push(groundGeo);
+    this.materials.push(groundMat);
+
+    // const hemiLightHelper = new THREE.HemisphereLightHelper(hemiLight, 10);
+    // scene.add(hemiLightHelper);
+    // const dirLightHelper = new THREE.DirectionalLightHelper(dirLight, 10);
+    // scene.add(dirLightHelper);
+    if (this.composer != null && camera != null) {
+      this.initPostEffects();
+    }
+  }
+}
+
 export class DarkNeonEnvironment extends Environment {
   static name = "Dark Neon";
   constructor(scene, composer, camera) {
@@ -172,6 +253,76 @@ export class DarkNeonEnvironment extends Environment {
     const groundGeo = new THREE.PlaneGeometry(10000, 10000);
     const groundMat = new THREE.MeshStandardMaterial({
       color: 0x748f15,
+      roughness: 0.1,
+      metalness: 0,
+    });
+
+    const ground = new THREE.Mesh(groundGeo, groundMat);
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    this.scene.add(ground);
+    this.geometries.push(groundGeo);
+    this.materials.push(groundMat);
+    this.objects.push(ground);
+
+    if (this.composer != null && camera != null) {
+      this.initPostEffects();
+    }
+  }
+
+  initPostEffects() {
+    const smaaEffect = new SMAAEffect();
+
+    this.effectPass = new EffectPass(
+      this.camera,
+      new BloomEffect({
+        luminanceThreshold: 0.5,
+      }),
+      smaaEffect
+    );
+    this.composer.addPass(this.effectPass);
+  }
+}
+
+export class DarkPinkEnvironment extends Environment {
+  static name = "Dark Pink";
+  constructor(scene, composer, camera) {
+    super(scene, composer, camera);
+
+    // lights
+    RectAreaLightUniformsLib.init();
+
+    const rectLight1 = new THREE.RectAreaLight(0xff1493, 30, 10, 10);
+    rectLight1.position.set(-15, 5, 10);
+    rectLight1.lookAt( 0, 0, 0 );
+    this.scene.add(rectLight1);
+    this.lights.push(rectLight1);
+
+    const rectLight2 = new THREE.RectAreaLight(0xfba0e3, 10, 10, 10);
+    rectLight2.position.set(0, 5, 20);
+    this.scene.add(rectLight2);
+    this.lights.push(rectLight2);
+
+    const rectLight3 = new THREE.RectAreaLight(0xff69b4, 30, 10, 10);
+    rectLight3.position.set(15, 5, 10);
+    rectLight3.lookAt( 0, 0, 0 );
+    this.scene.add(rectLight3);
+    this.lights.push(rectLight3);
+
+    const rectLightHelp1 = new RectAreaLightHelper(rectLight1);
+    const rectLightHelp2 = new RectAreaLightHelper(rectLight2);
+    const rectLightHelp3 = new RectAreaLightHelper(rectLight3);
+    this.scene.add(rectLightHelp1);
+    this.scene.add(rectLightHelp2);
+    this.scene.add(rectLightHelp3);
+    this.lights.push(rectLightHelp1);
+    this.lights.push(rectLightHelp2);
+    this.lights.push(rectLightHelp3);
+
+    // floor
+    const groundGeo = new THREE.PlaneGeometry(10000, 10000);
+    const groundMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
       roughness: 0.1,
       metalness: 0,
     });
@@ -386,6 +537,8 @@ export const ENVIRONMENTS = Object.freeze([
   DarkNeonEnvironment,
   NatureEnvironment,
   SkyEnvironment,
+  DesertEnvironment,
+  DarkPinkEnvironment,
 ]);
 
 export class EnvironmentSwitcher {

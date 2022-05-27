@@ -183,10 +183,10 @@ cone{s, s} -> f{s/4} cone{s/2, s/2, 3} f{-s/2} [ +x{90} f{s*sin(pi/6)} -x{90} co
 
 |                   | ABDAO, Regina | VILLARANTE, Gerizim |
 | ----------------: | :------------ | :------------------ |
-| Conceptualization |               | Proposed 3D L-systems |
-| Code              |               | <ul><li>Initialized project and libraries to use<li>Language parser<li>Turtle commands<li>Environments: Sunset, Dark Neon, Nature, Sky</ul> |
-| Examples created  |               | <ul><li>Plant<li>Hilbert curve<li>Sierpinski pyramid</ul> |
-| Documentation     |               | Helped in overall documentation |
+| Conceptualization | Proposed 2D L-Systems | Proposed 3D L-systems |
+| Code              | <ul><li>Environments: Desert, Dark Pink</ul> | <ul><li>Initialized project and libraries to use<li>Language parser<li>Turtle commands<li>Environments: Sunset, Dark Neon, Nature, Sky</ul> |
+| Examples created  | <ul><li>Plant 2<li>Palm Tree<li>Cartoon Tree<li>Flower<li>2D Examples</ul> | <ul><li>Plant<li>Hilbert curve<li>Sierpinski pyramid</ul> |
+| Documentation     | Helped and reviewed overall documentation | Helped in overall documentation |
 
 # Developer
 

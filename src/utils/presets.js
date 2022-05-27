@@ -74,4 +74,140 @@ export default Object.freeze([
       envName: "Dark Neon",
     },
   },
+  {
+    name: "Plant 2",
+    lsystem: {
+      axiom: "s m{0x228B22} t{0.3} f X e",
+      productions:
+        "X -> f{1} X [ -x +z{183} +y{10} f{1} X ] [ +x +z{16} +y{5} f{1} X ]",
+      iterations: 5,
+    },
+    defaults: { length: 0.9, angle: 25, radius: 0.3, size: 0.3 },
+    environment: {
+      autoRotate: false,
+      modelAngle: 0,
+      envName: "Nature",
+    },
+  },
+  {
+    name: "Palm Tree 1",
+    lsystem: {
+      axiom: "J m{0x00FF00} K K K K K K K K K K K K K K K K K K K K",
+      productions:
+        "J -> J m{0x964B00} -y cone s f e\nK -> -z{30} [ -y{32} L A ]\nL -> L -y{4}\nA -> s f e [ -x{24} B ] -y{16} [ A ] [ +x{24} B ]\nB -> s f e -y{16} B\ncone -> m{0x964B00} cone{random()/7+0.3}",
+      iterations: 8,
+    },
+    defaults: { length: 1.2, angle: 2, radius: 0.2, size: 0.4 },
+    environment: {
+      autoRotate: true,
+      modelAngle: 0,
+      envName: "Nature",
+    },
+  },
+  {
+    name: "Tree",
+    lsystem: {
+      axiom: "A B m{0x8B4513} cone",
+      productions:
+        "A -> s f f e\nB -> r{0.08} C I +z{60} B\nC -> C s f e\nE -> -y{4} E\nI -> r{0.04} J J J J J J J J\nJ -> +z{60} [ -y{48} E G ]\nG -> r{0.08} C F [ -x{30} m{0x50C878} D cube ] +y +y [ -x{30} m{0x50C878} D cube ] G\nD -> F [ -x{30} ] +y [ +x{30} ] D\ncone -> m{0x50C878} cone{random()/5+0.1}\ncube -> m{0x50C878} cube{0.2}",
+      iterations: 9,
+    },
+    defaults: { length: 0.4, angle: 2, radius: 0.3, size: 0.2 },
+    environment: {
+      autoRotate: true,
+      modelAngle: 0,
+      envName: "Sunset",
+    },
+  },
+  {
+    name: "Cartoon Tree",
+    lsystem: {
+      axiom: "A B m{0x8B4513} sphere",
+      productions:
+        "A -> s f e\nB -> r{0.4} C I +z{60} B\nC -> C s f e\nE -> -y{4} E\nI -> r{0.4} J J J J J J J J\nJ -> +z{60} [ -y{12} E G ]\nG -> r{0.08} C F [ -x{30} m{0x50C878} D cube ] +y +y [ -x{30} m{0x50C878} D cube ] G\nD -> F [ -x{30} ] +y [ +x{30} ] D\nsphere -> m{0x50C878} sphere{0.5}\ncube -> m{0x50C878} cube{1}",
+      iterations: 9,
+    },
+    defaults: { length: 0.2, angle: 2, radius: 0.6, size: 1 },
+    environment: {
+      autoRotate: true,
+      modelAngle: 0,
+      envName: "Sunset",
+    },
+  },
+  {
+    name: "Simple Flower",
+    lsystem: {
+      axiom: "m{0x00FF00} J m{0xFF0000} K K K K K K K KK K K K K K K K K K K K",
+      productions:
+        "J -> J -y s f f f e m{0x00FF00}\nK -> -z{30} [ -y{32} L A ]\nL -> L -y{4}\nA -> s f e [ -x{24} B ] -y{16} [ A ] [ +x{24} B ]\nB -> s f e -y{16} B",
+      iterations: 5,
+    },
+    defaults: { length: 0.2, angle: 10, radius: 0.1, size: 0.1 },
+    environment: {
+      autoRotate: true,
+      modelAngle: 0,
+      envName: "Sunset",
+    },
+  },
+  {
+    name: "Heighway Dragon (2D)",
+    lsystem: {
+      axiom: "f l X",
+      productions:
+        "X -> X +x Y l +x\nY -> -x l X -x Y",
+      iterations: 6,
+    },
+    defaults: { length: 0.2, angle: 90, radius: 0.05, size: 2 },
+    environment: {
+      autoRotate: true,
+      modelAngle: 0,
+      envName: "Sky",
+    },
+  },
+  {
+    name: "Heighway Dragon Smooth (2D)",
+    lsystem: {
+      axiom: "s t{0.7} f X e",
+      productions:
+        "X -> X +x Y f +x\nY -> -x f X -x Y",
+      iterations: 5,
+    },
+    defaults: { length: 0.4, angle: 90, radius: 0.1, size: 2.1 },
+    environment: {
+      autoRotate: true,
+      modelAngle: 0,
+      envName: "Dark Pink",
+    },
+  },
+  {
+    name: "Pentaplexity (2D)",
+    lsystem: {
+      axiom: "s m{0x66cdaa} f +x +x f +x +x f +x +x f +x +x f e",
+      productions:
+        "f -> s f +x +x f +x +x f +x{180} f -x f +x +x f e",
+      iterations: 3,
+    },
+    defaults: { length: 0.5, angle: 36, radius: 0.1, size: 0.1 },
+    environment: {
+      autoRotate: false,
+      modelAngle: 0,
+      envName: "Sky",
+    },
+  },
+  {
+    name: "Koch Curve (2D)",
+    lsystem: {
+      axiom: "s f e",
+      productions:
+        "f -> f +x f -x f -x f +x f",
+      iterations: 4,
+    },
+    defaults: { length: 0.1, angle: 90, radius: 0.1, size: 0.9 },
+    environment: {
+      autoRotate: true,
+      modelAngle: 0,
+      envName: "Dark Pink",
+    },
+  },
+
 ]);
