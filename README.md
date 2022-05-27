@@ -29,7 +29,7 @@ Symbols may either be:
 | Symbol | Parameters | Description |
 | -----: | :--------- | :---------- |
 | `m{color, roughness, metalness, flatShading, fog, wireframe, transparent, opacity, side}` | <ul><li>`color`=`0xffffff` : color in hex<li>`roughness`=`0.1` : `[0, 1]`<li>`metalness`=`0.1` : `[0, 1]`<li>`flatShading`=`false` : `true` or `false`<li>`fog`=`true` : influence material with fog<li>`wireframe`=`false` : render as wireframe<li>`transparent`=`false` : enable transparency<li>`opacity`=`1` : opacity when transparency is enabled<li>`side`=`0` : `0`=render front side, `1`=render back side, `2`=render both sides</ul> | Set current turtle material. |
-| `f{len}` | <ul><li>`len`=`defaults.length` : length</ul> | Move the turtle forward $len$ units.
+| `f{len}` | <ul><li>`len`=`defaults.length` : length</ul> | Move the turtle forward `len` units.
 | `l{len, startR, endR}` | <ul><li>`len`=`defaults.length` : length<li>`startR`=`turtle.radius` : starting radius<li>`endR`=`turtle.radius` : ending radius</ul> | Draw a cylinder of `len` units and move forward `len` units starting with a radius of `startR` and ending with `endR`.
 | `r{rad}` | <ul><li>`rad`=`defaults.radius` : radius</ul> | Set the radius of the turtle to `rad`.
 | `s` | | Begin drawing a curve. |
@@ -43,7 +43,7 @@ Symbols may either be:
 | `-z{angle}` | <ul><li>`angle`=`defaults.angle` : angle in degrees</ul> | Roll control. Decrease roll by `angle` degrees. |
 | `[` | | Push state to stack. State includes turtle position, material, tension, radius |
 | `]` | | Pop state from stack and set it to current state. |
-| `sphere{r, widthSeg, heightSeg, phi, phiLen, theta, thetaLen}` | <ul><li>`r`=`defaults.size/2` : radius<li>`widthSegments`=`12` : number of horizontal segments `[3, inf)`<li>`heightSegments`=`6` : number of vertical segments `[2, inf)`<li>`phiStart`=`0` : horizontal starting angle<li>`phiLength`=`2*pi` : horizontal sweep angle size<li>`thetaStart`=`0` : vertical starting angle<li>`thetaLength`=`pi` : vertical sweep angle size</ul> | Draws a sphere centered at the turtle's position. May be used to draw "leaves": `m{0xf695c3, 0.7, 0, false, true, false, true, 0.8, 2} sphere{random()/7+0.1, 12, 6, 0, pi/2, 0, pi}`<br><img src="images/leaves.png" alt="drawing" width="200"/> | 
+| `sphere{r, widthSeg, heightSeg, phi, phiLen, theta, thetaLen}` | <ul><li>`r`=`defaults.size/2` : radius<li>`widthSegments`=`12` : number of horizontal segments `[3, inf)`<li>`heightSegments`=`6` : number of vertical segments `[2, inf)`<li>`phiStart`=`0` : horizontal starting angle<li>`phiLength`=`2*pi` : horizontal sweep angle size<li>`thetaStart`=`0` : vertical starting angle<li>`thetaLength`=`pi` : vertical sweep angle size</ul> | Draws a sphere centered at the turtle's position. May be used to draw "leaves": `m{0x50C878, 0.7, 0, false, true, false, true, 0.8, 2} sphere{random()/7+0.1, 12, 6, 0, pi/2, 0, pi}`<br><img src="images/leaves.png" alt="drawing" width="200"/> | 
 | `box{w, h, d}` | <ul><li>`w`=`defaults.size` : width<li>`h`=`defaults.size` : height<li>`d`=`defaults.size` : depth</ul> | Draws a box centered at the turtle's position and aligned with the turtle's axes. |
 | `cube{s}` | <ul><li>`s`=`defaults.size` : side length</ul> | Draws a cube centered at the turtle's position and aligned with the turtle's axes. |
 | `cone{r, h, radialSeg}` | <ul><li>`r`=`defaults.size/2` : base radius<li>`h`=`defaults.size` : height<li>`radialSeg`=`8` : number of segmented faces around the circumference of the cone</ul> | Draws a cone centered at the turtle's position and aligned with the turtle's axes. Can be used to draw pyramids such as a square base pyramid: `cone{r, h, 4}`. |
@@ -185,8 +185,11 @@ cone{s, s} -> f{s/4} cone{s/2, s/2, 3} f{-s/2} [ +x{90} f{s*sin(pi/6)} -x{90} co
 | ----------------: | :------------ | :------------------ |
 | Conceptualization | Proposed 2D L-Systems | Proposed 3D L-systems |
 | Code              | <ul><li>Environments: Desert, Dark Pink</ul> | <ul><li>Initialized project and libraries to use<li>Language parser<li>Turtle commands<li>Environments: Sunset, Dark Neon, Nature, Sky</ul> |
-| Examples created  | <ul><li>Plant 2<li>Palm Tree<li>Cartoon Tree<li>Flower<li>2D Examples</ul> | <ul><li>Plant<li>Hilbert curve<li>Sierpinski pyramid</ul> |
+| Examples created  | <ul><li>Plant 2<li>Palm Tree<li>Tree<li>Cartoon Tree<li>Flower<li>2D Examples</ul> | <ul><li>Plant<li>Hilbert curve<li>Sierpinski pyramid</ul> |
 | Documentation     | Helped and reviewed overall documentation | Helped in overall documentation |
+
+## References and Inspiration
+<ul><li><a href="http://www.geocities.ws/gplatl/LSystem/LSystem.html">3d Lindenmayer Systems by Mr. Pix</a><li><a href="https://en.wikipedia.org/wiki/L-system">L-Systems</a><li><a href="https://observablehq.com/@kelleyvanevert/3d-l-systems">3d L-Systems by Kelley van Evert</a></ul>
 
 # Developer
 
